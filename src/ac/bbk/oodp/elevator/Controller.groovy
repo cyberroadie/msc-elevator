@@ -21,6 +21,7 @@ class Controller extends DefaultActor {
 
     private Actor clock
     private List elevatorList = []
+    private List commandList = []
 
     void act() {
         loop() {
