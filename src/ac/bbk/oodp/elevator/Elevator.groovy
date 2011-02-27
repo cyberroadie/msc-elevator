@@ -1,5 +1,7 @@
 package ac.bbk.oodp.elevator
 
+import groovyx.gpars.actor.DefaultActor
+
 /**
  * •	Keep track of a list of its current passengers.
  * •	Keep track of destinations requested by current passengers.
@@ -16,8 +18,17 @@ package ac.bbk.oodp.elevator
  * @author Olivier Van Acker, Richard Brown
  * Date: 21/02/2011
  */
-class Elevator {
+class Elevator extends DefaultActor {
 
+    int elevatorNumber
     int destination
+
+    void act() {
+        loop() {
+            react {
+                println "Elevator $elevatorNumber received second $it"
+            }
+        }
+    }
 
 }
