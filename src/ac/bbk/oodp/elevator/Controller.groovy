@@ -30,6 +30,7 @@ class Controller extends DefaultActor {
                 switch (it) {
                     case "finish":
                         terminate()
+                    break;
                     default:
                         elevatorList.each { def elevator -> elevator.send it }
                         println "cycle: $it"
