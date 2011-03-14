@@ -4,14 +4,14 @@ package ac.bbk.oodp.elevator
  * @author Olivier Van Acker, Richard Brown
  * Date: 21/02/2011
  */
-class Commands {
+class Command {
 
     String time
 
 }
 
 
-class Call extends Commands {
+class Call extends Command {
     String name
     int floor
     int dest
@@ -24,7 +24,7 @@ class Call extends Commands {
     }
 }
 
-class Fail extends Commands {
+class Fail extends Command {
     int elevatorNumber
 
     Fail(String line) {
@@ -33,7 +33,7 @@ class Fail extends Commands {
     }
 }
 
-class Fix extends Commands {
+class Fix extends Command {
     int elevatorNumber
 
     Fix(String line) {
@@ -42,14 +42,14 @@ class Fix extends Commands {
     }
 }
 
-class Display extends Commands {
+class Display extends Command {
 
     Display(String line) {
         super.time = line[line.indexOf("\t")..line.size()-1]
     }
 }
 
-class Status extends Commands {
+class Status extends Command {
 
     Status(String line) {
         super.time = line[line.indexOf("\t")..line.size()-1]
