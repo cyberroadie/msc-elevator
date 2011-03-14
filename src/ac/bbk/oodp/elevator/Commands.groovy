@@ -17,10 +17,11 @@ class Call extends Command {
     int dest
 
     Call(String line) {
-        super.time = time
-        this.name = name
-        this.floor = floor
-        this.dest = dest
+        List arLine = line.split("  ")
+        name = arLine[0]
+        floor = arLine[1].toInteger()
+        time = arLine[2]
+        dest = arLine[3].toInteger()
     }
 }
 
@@ -28,8 +29,9 @@ class Fail extends Command {
     int elevatorNumber
 
     Fail(String line) {
-        this.elevatorNumber = line[0..line.indexOf("\t")].toInteger()
-        super.time = line[line.indexOf("\t")..line.size()-1]
+        List arLine = line.tokenize("   ")
+        elevatorNumber = arLine[0].toInteger()
+        time = arLine[1]
     }
 }
 
@@ -37,22 +39,23 @@ class Fix extends Command {
     int elevatorNumber
 
     Fix(String line) {
-        this.elevatorNumber = line[0..line.indexOf("\t")].toInteger()
-        super.time = line[line.indexOf("\t")..line.size()-1]
+        List arLine = line.tokenize("   ")
+        elevatorNumber = arLine[0].toInteger()
+        time = arLine[1]
     }
 }
 
 class Display extends Command {
 
     Display(String line) {
-        super.time = line[line.indexOf("\t")..line.size()-1]
+        time = line
     }
 }
 
 class Status extends Command {
 
     Status(String line) {
-        super.time = line[line.indexOf("\t")..line.size()-1]
+        time = line
     }
 }
 

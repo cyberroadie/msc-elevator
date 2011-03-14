@@ -8,7 +8,7 @@ package ac.bbk.oodp.elevator
 class CallTest extends GroovyTestCase {
 
     void testConstructor() {
-        Call testCall = new Call("Richard Brown  3   12:30:02    5")
+        Call testCall = new Call("Richard Brown  3  12:30:02   5")
         assertEquals(testCall.getName(),"Richard Brown")
         assertEquals(testCall.getFloor(),3)
         assertEquals(testCall.getTime(),"12:30:02")
@@ -20,8 +20,9 @@ class CallTest extends GroovyTestCase {
 class FailTest extends GroovyTestCase {
 
     void testConstructor() {
-        Display testDisplay = new Display("12:30:02")
-        assertEquals(testDisplay.getTime(),"12:30:02")
+        Commands testFail = new Fail("4 12:30:02")
+        assertEquals(testFail.getElevatorNumber(),4)
+        assertEquals(testFail.getTime(),"12:30:02")
     }
 
 }
