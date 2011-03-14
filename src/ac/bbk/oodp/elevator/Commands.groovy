@@ -6,7 +6,7 @@ package ac.bbk.oodp.elevator
  */
 class Commands {
 
-    int time
+    String time
 
 }
 
@@ -16,38 +16,43 @@ class Call extends Commands {
     int floor
     int dest
 
-    void Call(String name, int floor, int time, int dest) {
-
+    Call(String line) {
+        super.time = time
+        this.name = name
+        this.floor = floor
+        this.dest = dest
     }
 }
 
 class Fail extends Commands {
-    int elevatornumber
+    int elevatorNumber
 
-    void Fail(int elevatornumber, int time) {
-
+    Fail(String line) {
+        this.elevatorNumber = line[0..line.indexOf("\t")].toInteger()
+        super.time = line[line.indexOf("\t")..line.size()-1]
     }
 }
 
 class Fix extends Commands {
-    int elevatornumber
+    int elevatorNumber
 
-    void Fix(int elevatornumber, int time) {
-
+    Fix(String line) {
+        this.elevatorNumber = line[0..line.indexOf("\t")].toInteger()
+        super.time = line[line.indexOf("\t")..line.size()-1]
     }
 }
 
 class Display extends Commands {
 
-    void Display(int time) {
-
+    Display(String line) {
+        super.time = line[line.indexOf("\t")..line.size()-1]
     }
 }
 
 class Status extends Commands {
 
-    void Status(int time) {
-
+    Status(String line) {
+        super.time = line[line.indexOf("\t")..line.size()-1]
     }
 }
 

@@ -22,7 +22,8 @@ class Elevator extends DefaultActor {
 
     int elevatorNumber
     int destination
-    enum direction
+    List passengers
+    boolean operational
 
     void act() {
         loop() {
