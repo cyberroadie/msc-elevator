@@ -4,9 +4,13 @@ package ac.bbk.oodp.elevator
  * @author Olivier Van Acker, Richard Brown
  * Date: 21/02/2011
  */
-class Command {
+abstract class Command {
 
     String time
+
+    Command(String time) {
+        this.time = time
+    }
 
 }
 
@@ -17,9 +21,9 @@ class Call extends Command {
     int dest
 
     Call(String name, int floor, String time, int dest) {
+        super(time)
         this.name = name
         this.floor = floor
-        super.time = time
         this.dest = dest
     }
 }
@@ -28,32 +32,31 @@ class Fail extends Command {
     int elevatorNumber
 
     Fail(int elevatorNumber, String time) {
+        super(time)
         this.elevatorNumber = elevatorNumber
-        super.time = time
     }
 }
 
 class Fix extends Command {
     int elevatorNumber
 
-    Fix(String line) {
-        List arLine = line.tokenize("   ")
-        elevatorNumber = arLine[0].toInteger()
-        time = arLine[1]
+    Fix(int elevatorNumber, String time) {
+        super(time)
+        this.elevatorNumber = elevatorNumber
     }
 }
 
 class Display extends Command {
 
-    Display(String line) {
-        time = line
+    Display(String time) {
+        super(time)
     }
 }
 
 class Status extends Command {
 
-    Status(String line) {
-        time = line
+    Status(String time) {
+        super(time)
     }
 }
 

@@ -10,7 +10,6 @@ package ac.bbk.oodp.elevator
 class CommandFactory {
 
     static getCommand(String line) {
-        println line
         List command = line.split('\t')
         switch (command[0]) {
             case "call":
