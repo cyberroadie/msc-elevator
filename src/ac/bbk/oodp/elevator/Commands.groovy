@@ -16,22 +16,20 @@ class Call extends Command {
     int floor
     int dest
 
-    Call(String line) {
-        List arLine = line.split("  ")
-        name = arLine[0]
-        floor = arLine[1].toInteger()
-        time = arLine[2]
-        dest = arLine[3].toInteger()
+    Call(String name, int floor, String time, int dest) {
+        this.name = name
+        this.floor = floor
+        super.time = time
+        this.dest = dest
     }
 }
 
 class Fail extends Command {
     int elevatorNumber
 
-    Fail(String line) {
-        List arLine = line.tokenize("   ")
-        elevatorNumber = arLine[0].toInteger()
-        time = arLine[1]
+    Fail(int elevatorNumber, String time) {
+        this.elevatorNumber = elevatorNumber
+        super.time = time
     }
 }
 
