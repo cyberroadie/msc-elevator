@@ -22,8 +22,15 @@ class Elevator extends DefaultActor {
 
     int elevatorNumber
     int destination
+    int floorsTravelled
+    int passengersDelivered
+    int distanceTravelled
     List passengers
     boolean operational
+
+    Elevator(int elevator) {
+        elevatorNumber = elevator
+    }
 
     void act() {
         loop() {
@@ -31,6 +38,14 @@ class Elevator extends DefaultActor {
                 println "Elevator $elevatorNumber received second $it"
             }
         }
+    }
+
+    String display() {
+        "Elevator Number: ${elevatorNumber}\nCurrent location: ${}\nCurrent passengers: ${passengers.join(', ')}"
+    }
+
+    String stats() {
+        "Elevator Number: ${elevatorNumber}\nNo of passengers delivered: ${passengersDelivered}\nCurrent passengers: ${passengers.size()}\nDistance Travelled: ${distanceTravelled}"
     }
 
 }
