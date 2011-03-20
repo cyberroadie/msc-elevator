@@ -5,4 +5,5 @@ package ac.bbk.oodp.elevator
  * Date: 21/02/2011
  */
 class Passenger {
+    String name
 }

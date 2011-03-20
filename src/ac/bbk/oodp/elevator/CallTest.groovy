@@ -20,7 +20,7 @@ class CallTest extends GroovyTestCase {
 class FailTest extends GroovyTestCase {
 
     void testConstructor() {
-        Commands testFail = new Fail("4 12:30:02")
+        Command testFail = new Fail("4 12:30:02")
         assertEquals(testFail.getElevatorNumber(),4)
         assertEquals(testFail.getTime(),"12:30:02")
     }

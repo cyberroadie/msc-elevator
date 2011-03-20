@@ -4,30 +4,12 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/test/src" isTestSource="true" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="groovy-1.7.5" level="application" />
+    <orderEntry type="library" name="groovy-1.7.6" level="application" />
     <orderEntry type="library" name="groovy-1.7.8" level="application" />
-    <orderEntry type="library" name="groovy-1.7.8" level="application" />
-    <orderEntry type="module-library">
-      <library name="Grab:gpars-0.12-beta-1-SNAPSHOT.jar">
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.groovy/grapes/org.codehaus.gpars/gpars/jars/gpars-0.12-beta-1-SNAPSHOT.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Grab:jsr166y-070108.jar">
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.groovy/grapes/org.coconut.forkjoin/jsr166y/jars/jsr166y-070108.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
   </component>
 </module>
 
