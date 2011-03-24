@@ -1,12 +1,28 @@
 package ac.bbk.oodp.elevator
 
+import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
+
 /**
  * @author Olivier Van Acker, Richard Brown
  * Date: 21/02/2011
  */
+
+
 class Command {
 
-    String time
+//    private String time
+    DateTime time
+    DateTimeFormatter fmt = DateTimeFormat.forPattern("HH:mm:ss")
+
+    public void setTime(String timeString) {
+        time = fmt.parseDateTime("12:30:02");
+    }
+
+    public String getTime() {
+        fmt.print(time)
+    }
 
 }
 

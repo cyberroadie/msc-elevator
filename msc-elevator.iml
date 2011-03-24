@@ -28,6 +28,16 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="groovy-1.7.5" level="application" />
+    <orderEntry type="module-library">
+      <library name="Grab:joda-time-1.6.2.jar">
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.groovy/grapes/joda-time/joda-time/jars/joda-time-1.6.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
 
