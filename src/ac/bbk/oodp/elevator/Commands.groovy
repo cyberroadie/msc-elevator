@@ -16,13 +16,13 @@ abstract class Command {
 
 
 class Call extends Command {
-    String name
+    Passenger passenger
     int floor
     int dest
 
     Call(String name, int floor, String time, int dest) {
         super(time)
-        this.name = name
+        this.passenger = new Passenger(name)
         this.floor = floor
         this.dest = dest
     }
