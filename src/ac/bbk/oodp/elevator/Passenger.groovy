@@ -6,4 +6,11 @@ package ac.bbk.oodp.elevator
  */
 class Passenger {
     String name
+
+    Passenger(String name, int startingFloor, int destination) {
+        this.name = name
+    }
+
 }
+
+
