@@ -21,6 +21,7 @@ import groovyx.gpars.actor.DefaultActor
 class Elevator extends DefaultActor {
 
     int elevatorNumber
+    int currentFloor
     int destination
     int floorsTravelled
     int passengersDelivered
@@ -29,7 +30,8 @@ class Elevator extends DefaultActor {
     int travelTime = 0
     String direction = "none"
     List passengers
-    List calls
+    List callList
+    List currentCalls
     boolean operational
     boolean moving
 
@@ -47,6 +49,7 @@ class Elevator extends DefaultActor {
 
     void makeMove() {
         if (!operational) {return}
+        if (moving()) {incrementTravelTime()}
         if (!moving()) {incrementWait()}
         if (!destinationValid()) {updateDestination()}
         if (!reachedDestination()) {letPassengersOn()}
@@ -60,21 +63,81 @@ class Elevator extends DefaultActor {
         }
     }
 
-    void incrementTravelTime() {
+    private void incrementTravelTime() {
         travelTime+=1
         if (travelTime == 10) {
+            changeFloor()
             travelTime = 0
             moving = false
         }
     }
 
+    private changeFloor() {
+        if (direction == "up") {
+            currentFloor += 1
+        }
+        else {
+            currentFloor -= 1
+        }
+    }
+
+    private boolean destinationValid() {
+        return
+    }
+
     void updateDestination() {
-        calls.each() {
-            if (callIsInSameDirection(it.getFloor())) {
+        if (callInSameDirection()) {
+            return
+        }
+        if (currentCallList.size() > 0) {
+            destination = currentCallList[0].getPassenger().getFloor()
+            return
+        }
+        if (callInOppositeDirection()) {
+            return
+        }
+    }
+
+    void addCall(Command call) {
+        callList[callList.size()] = call
+    }
+
+    boolean callInSameDirection() {
+        if (direction == "up") {
+            return callUpFromFloor()
+        }
+        else {
+            return callDownFromFloor()
+        }
+    }
+
+    boolean callInOppositeDirection() {
+        if (direction == "up") {
+            return callDownFromFloor()
+        }
+        else {
+            return callUpFromFloor()
+        }
+    }
+
+    boolean callUpFromFloor() {
+        callList.each() {
+            if (it.getFloor() > floor) {
                 destination = it.getFloor()
-                return
+                return true
             }
         }
+        return false
+    }
+
+    boolean callDownFromFloor() {
+        callList.each() {
+            if (it.getFloor() < floor) {
+                destination = it.getFloor()
+                return true
+            }
+        }
+        return false
     }
 
     String display() {
