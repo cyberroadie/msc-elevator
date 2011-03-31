@@ -16,12 +16,16 @@ class Controller extends DefaultActor {
         this.clock = clock
         for(i in 1..numberOfElevators)
             this.elevatorList.add(new Elevator(elevatorNumber: i).start())
+        controllerParser = new InputParser()
+        setupSystem()
         println "Finished initializing controller"
     }
 
     private Actor clock
+    private int numberOfElevators
     private List elevatorList = []
     private List commandList = []
+    private InputParser controllerParser
 
     void act() {
         loop() {
@@ -34,8 +38,25 @@ class Controller extends DefaultActor {
                     default:
                         elevatorList.each { def elevator -> elevator.send it }
                         println "cycle: $it"
+
                 }
             }
+        }
+    }
+
+    private void setupSystem() {
+        controllerParser
+    }
+
+    private void initElevators() {
+        controllerParser.initElevators(numberOfElevators).each {
+            elevatorList[elevatorList.size()] = it
+        }
+    }
+
+    private passCall(Command call) {
+        elevatorList.each() {
+            elevator.addCall(call)
         }
     }
 
