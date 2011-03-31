@@ -19,6 +19,7 @@ class Call extends Command {
     Passenger passenger
     int floor
     int dest
+    boolean answered = false
 
     Call(String name, int floor, String time, int dest) {
         super(time)
