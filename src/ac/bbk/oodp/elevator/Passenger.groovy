@@ -7,7 +7,7 @@ package ac.bbk.oodp.elevator
 class Passenger {
     String name
 
-    Passenger(String name, int startingFloor, int destination) {
+    Passenger(String name) {
         this.name = name
     }
 
