@@ -11,9 +11,10 @@ abstract class Command {
 }
 
 class Call extends Command {
-    String name
+    Passenger passenger
     int floor
     int dest
+    boolean answered = false
 
     Call(String commandString) throws CommandException {
         List command = commandString.split('\t')
@@ -28,7 +29,6 @@ class Call extends Command {
             throw new CommandException("Incorrect command: ", ex)
         }
     }
-
 }
 
 class Fail extends Command {
