@@ -12,6 +12,6 @@ package ac.bbk.oodp.elevator
 @Grab(group='org.codehaus.gpars', module='gpars', version='0.12-beta-1-SNAPSHOT')
 @Grab(group = 'org.codehaus.gpars', module = 'gpars', version = '0.12-beta-1-SNAPSHOT')
 def clock = new Clock(endTime: 100).start()
-def controller = new Controller(new BufferedReader(new FileReader("test.txt")), clock).start()
+def controller = new Controller(new BufferedReader(new FileReader(this.args[0])), clock).start()
 
 [clock, controller]*.join()

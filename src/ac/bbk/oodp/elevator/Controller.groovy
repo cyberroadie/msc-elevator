@@ -9,6 +9,8 @@ import groovyx.gpars.actor.Actor
  */
 class Controller extends DefaultActor {
 
+    def log = GroovyLog.newInstance(Controller.class)
+
     Clock clock
     int numberOfElevators
     int numberOfFloors
@@ -21,7 +23,7 @@ class Controller extends DefaultActor {
         parseHeader(reader)
         inputParser = new CommandParser(reader)
         initElevators(reader)
-        println "Finished initializing controller"
+        log.info("Finished initializing controller")
     }
 
     /**
