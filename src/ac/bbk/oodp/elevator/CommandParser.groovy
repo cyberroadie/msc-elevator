@@ -4,7 +4,7 @@ package ac.bbk.oodp.elevator
  * @author Olivier Van Acker, Richard Brown
  * Date: 21/02/2011
  */
-class InputParser {
+class CommandParser {
 
     List lines
     def reader
@@ -14,11 +14,9 @@ class InputParser {
     List errorLog
     Command currentCommand
 
-    InputParser(BufferedReader reader) {
+    CommandParser(BufferedReader reader) {
         this.reader = reader
     }
-
-
 
     String readNextLine() {
         reader.readLine()

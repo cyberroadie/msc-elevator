@@ -35,8 +35,9 @@ class Elevator extends DefaultActor {
     boolean operational
     boolean moving
 
-    Elevator(int elevator) {
+    Elevator(int elevator, int startingFloor) {
         elevatorNumber = elevator
+        currentFloor = startingFloor
     }
 
     void act() {

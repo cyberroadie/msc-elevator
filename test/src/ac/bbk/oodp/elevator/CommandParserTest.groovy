@@ -4,10 +4,10 @@ package ac.bbk.oodp.elevator
  * @author Olivier Van Acker, Richard Brown
  * Date: 13/03/2011
  */
-class InputParserTest extends GroovyTestCase {
+class CommandParserTest extends GroovyTestCase {
 
     void testReadNextLine() {
-        def testParser = new InputParser("/Users/brownr22/Documents/commands.txt")
+        def testParser = new CommandParser("/Users/brownr22/Documents/commands.txt")
         Command testCommand = testParser.getNextCommand("12:30:02")
         println "${testCommand.getTime()} ${testCommand.class.simpleName}"
         testCommand = testParser.getNextCommand("12:30:03")

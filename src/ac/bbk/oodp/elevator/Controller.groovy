@@ -14,20 +14,31 @@ class Controller extends DefaultActor {
     int numberOfFloors
     List elevatorList = []
     private List commandList = []
-    private InputParser inputParser
+    private CommandParser inputParser
 
     Controller(BufferedReader reader, Actor clock) {
         this.clock = clock
         parseHeader(reader)
-        inputParser = new InputParser(reader)
-        for(i in 1..numberOfElevators)
-            this.elevatorList.add((new Elevator(i)).start())
+        inputParser = new CommandParser(reader)
+        initElevators(reader)
         println "Finished initializing controller"
     }
 
     /**
+     * Reads the init commands and initialize the elevators
+     * with floor and elevator number and starts elevators
+     * @param reader input to read configuration from
+     */
+    void initElevators(reader) {
+        for(i in 1..numberOfElevators) {
+            def lineSplit = reader.readLine().split("\t")
+            this.elevatorList.add((new Elevator(lineSplit[1].toInteger(), lineSplit[2].toInteger())).start())
+        }
+    }
+
+    /**
      * Parses the header and sets start time, no of floors and no of elevators on the controller
-     * @param controller
+     * @param reader input to read configuration from
      */
     void parseHeader(reader) {
         this.clock.startTime = reader.readLine().split("\t")[1]
@@ -49,12 +60,6 @@ class Controller extends DefaultActor {
 
                 }
             }
-        }
-    }
-
-    private void initElevators() {
-        inputParser.initElevators(numberOfElevators).each {
-            elevatorList[elevatorList.size()] = it
         }
     }
 
