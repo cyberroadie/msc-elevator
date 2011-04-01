@@ -8,8 +8,8 @@ class ControllerTest extends GroovyTestCase {
 
     BufferedReader reader
 
-    void setup() {
-        reader = new BufferedReader(
+    void setUp() {
+        this.reader = new BufferedReader(
                 new StringReader("StartTime:\t14:00:00\n" +
                                  "NumberOfFloors:\t12\n" +
                                  "NumberOfElevators:\t3\n" +
