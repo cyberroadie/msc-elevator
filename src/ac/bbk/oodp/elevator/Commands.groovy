@@ -8,55 +8,86 @@ abstract class Command {
 
     String time
 
-    Command(String time) {
-        this.time = time
-    }
-
 }
-
 
 class Call extends Command {
     String name
     int floor
     int dest
 
-    Call(String name, int floor, String time, int dest) {
-        super(time)
-        this.name = name
-        this.floor = floor
-        this.dest = dest
+    Call(String commandString) throws CommandException {
+        List command = commandString.split('\t')
+        if(command.size() != 5)
+            throw new CommandException("Incorrect number of commands in string")
+        try {
+            this.name = command[1]
+            this.floor = command[2].toInteger()
+            this.time = command[3]
+            this.dest = command[4].toInteger()
+        } catch (Exception ex) {
+            throw new CommandException("Incorrect command: ", ex)
+        }
     }
+
 }
 
 class Fail extends Command {
     int elevatorNumber
 
-    Fail(int elevatorNumber, String time) {
-        super(time)
-        this.elevatorNumber = elevatorNumber
+    Fail(String commandString) throws CommandException {
+        List command = commandString.split('\t')
+        if(command.size() != 3)
+            throw new CommandException("Incorrect number of commands in string")
+        try {
+            this.elevatorNumber = command[1].toInteger()
+            this.time = command[2]
+        } catch (Exception ex) {
+            throw new CommandException("Incorrect command: ", ex)
+        }
     }
 }
 
 class Fix extends Command {
     int elevatorNumber
 
-    Fix(int elevatorNumber, String time) {
-        super(time)
-        this.elevatorNumber = elevatorNumber
+    Fix(String commandString) {
+        List command = commandString.split('\t')
+        if(command.size() != 3)
+            throw new CommandException("Incorrect number of commands in string")
+        try {
+            this.elevatorNumber = command[1].toInteger()
+            this.time = command[2]
+        } catch (Exception ex) {
+            throw new CommandException("Incorrect command: ", ex)
+        }
     }
 }
 
 class Display extends Command {
 
-    Display(String time) {
-        super(time)
+    Display(String commandString) {
+        List command = commandString.split('\t')
+        if(command.size() != 2)
+            throw new CommandException("Incorrect number of commands in string")
+        try {
+            this.time = command[1]
+        } catch (Exception ex) {
+            throw new CommandException("Incorrect command: ", ex)
+        }
     }
 }
 
 class Status extends Command {
 
-    Status(String time) {
-        super(time)
+    Status(String commandString) {
+        List command = commandString.split('\t')
+        if(command.size() != 2)
+            throw new CommandException("Incorrect number of commands in string")
+        try {
+            this.time = command[1]
+        } catch (Exception ex) {
+            throw new CommandException("Incorrect command: ", ex)
+        }
     }
 }
 

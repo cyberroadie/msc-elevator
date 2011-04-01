@@ -6,25 +6,28 @@ package ac.bbk.oodp.elevator
  */
 class CommandFactory {
 
-    static def getCommand(String line) {
-        List command = line.split('\t')
-        switch (command[0]) {
-            case "call":
-                return new Call(command[1],command[2].toInteger(),command[3],command[4].toInteger())
-                break
-            case "display":
-                return new Display(command[1])
-                break
-            case "fail":
-                return new Fail(command[1].toInteger(),command[2])
-                break
-            case "fix":
-                return new Fix(command[1].toInteger(),command[2])
-                break
-            case "stats":
-                return new Status(command[1])
-                break
-        }
+    static def getCommand(String line) throws CommandException {
+        if(line.startsWith("call"))
+            return new Call(line)
+        if(line.startsWith("display"))
+            return new Display(line)
+        if(line.startsWith("fail"))
+            return new Fail(line)
+        if(line.startsWith("fix"))
+            return new Fix(line)
+        if(line.startsWith("stats"))
+            return new Status(line)
+        throw new CommandException("Unknown command: " + line)
+    }
+}
 
+class CommandException extends Exception {
+
+    CommandException(String s) {
+        super(s)
+    }
+
+    CommandException(String s, Throwable throwable) {
+        super(s, throwable)
     }
 }
