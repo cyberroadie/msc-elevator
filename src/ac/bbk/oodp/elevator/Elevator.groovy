@@ -22,8 +22,20 @@ class Elevator extends DefaultActor {
 
     int elevatorNumber
     int destination
+    int floorsTravelled
+    int passengersDelivered
+    int distanceTravelled
+    int waitTime = 0
+    int travelTime = 0
+    String direction = "none"
     List passengers
+    List calls
     boolean operational
+    boolean moving
+
+    Elevator(int elevator) {
+        elevatorNumber = elevator
+    }
 
     void act() {
         loop() {
@@ -31,6 +43,46 @@ class Elevator extends DefaultActor {
                 println "Elevator $elevatorNumber received second $it"
             }
         }
+    }
+
+    void makeMove() {
+        if (!operational) {return}
+        if (!moving()) {incrementWait()}
+        if (!destinationValid()) {updateDestination()}
+        if (!reachedDestination()) {letPassengersOn()}
+    }
+
+    void incrementWait() {
+        waitTime+=1
+        if (waitTime == 5) {
+            waitTime = 0
+            moving = true
+        }
+    }
+
+    void incrementTravelTime() {
+        travelTime+=1
+        if (travelTime == 10) {
+            travelTime = 0
+            moving = false
+        }
+    }
+
+    void updateDestination() {
+        calls.each() {
+            if (callIsInSameDirection(it.getFloor())) {
+                destination = it.getFloor()
+                return
+            }
+        }
+    }
+
+    String display() {
+        "Elevator Number: ${elevatorNumber}\nCurrent location: ${}\nCurrent passengers: ${passengers.join(', ')}"
+    }
+
+    String stats() {
+        "Elevator Number: ${elevatorNumber}\nNo of passengers delivered: ${passengersDelivered}\nCurrent passengers: ${passengers.size()}\nDistance Travelled: ${distanceTravelled}"
     }
 
 }

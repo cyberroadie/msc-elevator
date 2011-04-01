@@ -38,5 +38,17 @@ class Controller extends DefaultActor {
             }
         }
     }
+
+    void display() {
+        elevatorList.each() { elevator ->
+            println elevator.display()
+        }
+    }
+
+    void status() {
+        elevatorList.each() { elevator ->
+            println elevator.stats()
+        }
+    }
 }
 

@@ -7,17 +7,21 @@ package ac.bbk.oodp.elevator
 class InputParser {
 
     List lines
+    def file
     List setup
     List init
     List commands
     List errorLog
+    Command currentCommand
 
     InputParser(String filename) {
 
-        lines = new File(filename).readLines()
-        for (i in (0..lines.size()-1)) {
-            readLine(lines[i])
-        }
+        file = new BufferedReader(new FileReader(filename))
+//        lines = new File(filename).readLines()
+//        for (i in (0..lines.size()-1)) {
+//            readLine(lines[i])
+//        }
+        currentCommand = CommandFactory.getCommand(readNextLine())
     }
 
     void readLine(String line) {
@@ -26,30 +30,32 @@ class InputParser {
             case "StartTime":
             case "NumberOfFloors":
             case "NumberOfElevators":
-            case "init":
                 setup[setup.size()] = line
                 break
             case "init":
                 init[init.size()] = line
                 break
-            case "call":
-                commands[commands.size()] = new Call(line[line.indexOf("\t")+1..line.size()-1])
-                break
-            case "display":
-                commands[commands.size()] = new Display(line[line.indexOf("\t")+1..line.size()-1])
-                break
-            case "fail":
-                commands[commands.size()] = new Fail(line[line.indexOf("\t")+1..line.size()-1])
-                break
-            case "fix":
-                commands[commands.size()] = new Fix(line[line.indexOf("\t")+1..line.size()-1])
-                break
-            case "status":
-                commands[commands.size()] = new Status(line[line.indexOf("\t")+1..line.size()-1])
-                break
             default:
-                errorLog[errorLog.size()] = "Unknown command in line: ${line}"
+                commands[commands.size()] = CommandFactory.getCommand(line)
         }
 
+    }
+
+    String readNextLine() {
+        file.readLine()
+    }
+
+    Command getNextCommand(String time) {
+        if (currentCommand.getTime() == time) {
+            Command tmpCommand = currentCommand
+            String line = readNextLine()
+            if (line != null) {
+                currentCommand = CommandFactory.getCommand(line)
+            }
+            else {
+                currentCommand = null
+            }
+            return tmpCommand
+        }
     }
 }
