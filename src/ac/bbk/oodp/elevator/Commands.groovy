@@ -21,7 +21,7 @@ class Call extends Command {
         if(command.size() != 5)
             throw new CommandException("Incorrect number of commands in string")
         try {
-            this.name = command[1]
+            this.passenger = new Passenger(command[1])
             this.floor = command[2].toInteger()
             this.time = command[3]
             this.dest = command[4].toInteger()

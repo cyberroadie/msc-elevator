@@ -1,11 +1,7 @@
 package ac.bbk.oodp.elevator
 
 /**
- * Created by IntelliJ IDEA.
- * User: brownr22
- * Date: 15/03/2011
- * Time: 20:35
- * To change this template use File | Settings | File Templates.
+ * @author Olivier Van Acker, Richard Brown
  */
 class ElevatorTest extends GroovyTestCase {
 
