@@ -3,29 +3,37 @@ package ac.bbk.oodp.elevator
 import groovyx.gpars.actor.DefaultActor
 import groovyx.gpars.actor.Actor
 
-@GrabResolver(name = 'gpars', root = 'http://snapshots.repository.codehaus.org/', m2Compatible = true)
-
 /**
  * @author Olivier Van Acker, Richard Brown
  * Date: 21/02/2011
  */
-@Grab(group = 'org.codehaus.gpars', module = 'gpars', version = '0.12-beta-1-SNAPSHOT')
 class Controller extends DefaultActor {
 
-    Controller(int numberOfElevators, Actor clock) {
+    Clock clock
+    int numberOfElevators
+    int numberOfFloors
+    List elevatorList = []
+    private List commandList = []
+    private InputParser inputParser
+
+    Controller(BufferedReader reader, Actor clock) {
         this.clock = clock
+        parseHeader(reader)
+        inputParser = new InputParser(reader)
         for(i in 1..numberOfElevators)
-            this.elevatorList.add(new Elevator(elevatorNumber: i).start())
-        controllerParser = new InputParser()
-        setupSystem()
+            this.elevatorList.add((new Elevator(i)).start())
         println "Finished initializing controller"
     }
 
-    private Actor clock
-    private int numberOfElevators
-    private List elevatorList = []
-    private List commandList = []
-    private InputParser controllerParser
+    /**
+     * Parses the header and sets start time, no of floors and no of elevators on the controller
+     * @param controller
+     */
+    void parseHeader(reader) {
+        this.clock.startTime = reader.readLine().split("\t")[1]
+        this.numberOfFloors = reader.readLine().split("\t")[1].toInteger()
+        this.numberOfElevators = reader.readLine().split("\t")[1].toInteger()
+    }
 
     void act() {
         loop() {
@@ -44,12 +52,8 @@ class Controller extends DefaultActor {
         }
     }
 
-    private void setupSystem() {
-        controllerParser
-    }
-
     private void initElevators() {
-        controllerParser.initElevators(numberOfElevators).each {
+        inputParser.initElevators(numberOfElevators).each {
             elevatorList[elevatorList.size()] = it
         }
     }

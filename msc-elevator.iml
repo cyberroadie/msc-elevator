@@ -12,6 +12,15 @@
     <orderEntry type="library" name="groovy-1.7.6" level="application" />
     <orderEntry type="library" name="groovy-1.7.8" level="application" />
     <orderEntry type="module-library">
+      <library name="Grab:joda-time-1.6.2.jar">
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.groovy/grapes/joda-time/joda-time/jars/joda-time-1.6.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
       <library name="Grab:gpars-0.12-beta-1-SNAPSHOT.jar">
         <CLASSES>
           <root url="jar://$USER_HOME$/.groovy/grapes/org.codehaus.gpars/gpars/jars/gpars-0.12-beta-1-SNAPSHOT.jar!/" />
@@ -24,15 +33,6 @@
       <library name="Grab:jsr166y-070108.jar">
         <CLASSES>
           <root url="jar://$USER_HOME$/.groovy/grapes/org.coconut.forkjoin/jsr166y/jars/jsr166y-070108.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Grab:joda-time-1.6.2.jar">
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.groovy/grapes/joda-time/joda-time/jars/joda-time-1.6.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

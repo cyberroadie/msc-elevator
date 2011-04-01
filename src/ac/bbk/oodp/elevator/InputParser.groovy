@@ -7,42 +7,21 @@ package ac.bbk.oodp.elevator
 class InputParser {
 
     List lines
-    def file
+    def reader
     List setup
     List init
     List commands
     List errorLog
     Command currentCommand
 
-    InputParser(String filename) {
-
-        file = new BufferedReader(new FileReader(filename))
-//        lines = new File(filename).readLines()
-//        for (i in (0..lines.size()-1)) {
-//            readLine(lines[i])
-//        }
-        currentCommand = CommandFactory.getCommand(readNextLine())
+    InputParser(BufferedReader reader) {
+        this.reader = reader
     }
 
-    void readLine(String line) {
 
-        switch (line[0..line.indexOf("\t")]) {
-            case "StartTime":
-            case "NumberOfFloors":
-            case "NumberOfElevators":
-                setup[setup.size()] = line
-                break
-            case "init":
-                init[init.size()] = line
-                break
-            default:
-                commands[commands.size()] = CommandFactory.getCommand(line)
-        }
-
-    }
 
     String readNextLine() {
-        file.readLine()
+        reader.readLine()
     }
 
     Command getNextCommand(String time) {
