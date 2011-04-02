@@ -91,3 +91,7 @@ class Status extends Command {
     }
 }
 
+class Terminate extends Command {
+
+}
+

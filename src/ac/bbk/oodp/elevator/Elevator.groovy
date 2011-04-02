@@ -29,7 +29,7 @@ class Elevator extends DefaultActor {
     int waitTime = 0
     int travelTime = 0
     String direction = "none"
-    List passengers
+    List passengers = new ArrayList()
     List callList
     List currentCalls
     boolean operational
@@ -43,7 +43,7 @@ class Elevator extends DefaultActor {
     void act() {
         loop() {
             react {
-                println "Elevator $elevatorNumber received second $it"
+                println "Elevator $elevatorNumber received command $it"
             }
         }
     }

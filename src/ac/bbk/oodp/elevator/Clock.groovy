@@ -2,6 +2,10 @@ package ac.bbk.oodp.elevator
 
 
 import groovyx.gpars.actor.DefaultActor
+import org.joda.time.DateTime
+
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
 
 /**
  * @author Olivier Van Acker, Richard Brown
@@ -9,22 +13,31 @@ import groovyx.gpars.actor.DefaultActor
  */
 
 class Clock extends DefaultActor {
-    String startTime
+    DateTime startTime
     int cycle;
-    int endTime
-
-    void afterStart() {
-        cycle = 0;
-    }
 
     void act() {
         loop {
-            react {
-                if(cycle < endTime)
-                    reply cycle++
-                else
-                    reply "finish"
+            react {String message ->
+                if(message == 'next') {
+                    increaseTime()
+                    reply getNextStringTime()
+                } else if(message.startsWith("StartTime:"))
+                    initilizeClock(message)
             }
         }
+    }
+
+    void increaseTime() {
+        startTime = startTime.plusSeconds(1)
+    }
+
+    void initilizeClock(String timeString) {
+        DateTimeFormatter fmt = DateTimeFormat.forPattern("HH:mm:ss");
+        startTime = fmt.parseDateTime(timeString.split("\t")[1])
+    }
+
+    String getNextStringTime() {
+        startTime.toString("HH:mm:ss")
     }
 }

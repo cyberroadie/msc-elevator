@@ -7,6 +7,8 @@ package ac.bbk.oodp.elevator
 class CommandFactory {
 
     static def getCommand(String line) throws CommandException {
+        if(line == null)
+            return new Terminate()
         if(line.startsWith("call"))
             return new Call(line)
         if(line.startsWith("display"))

@@ -16,23 +16,18 @@ class CommandParser {
 
     CommandParser(BufferedReader reader) {
         this.reader = reader
-    }
-
-    String readNextLine() {
-        reader.readLine()
+        currentCommand = CommandFactory.getCommand(reader.readLine())
     }
 
     Command getNextCommand(String time) {
         if (currentCommand.getTime() == time) {
             Command tmpCommand = currentCommand
-            String line = readNextLine()
-            if (line != null) {
-                currentCommand = CommandFactory.getCommand(line)
-            }
-            else {
-                currentCommand = null
-            }
+            currentCommand = CommandFactory.getCommand(reader.readLine())
             return tmpCommand
+        } else if (currentCommand instanceof Terminate) {
+            return currentCommand
+        } else {
+            return null
         }
     }
 }

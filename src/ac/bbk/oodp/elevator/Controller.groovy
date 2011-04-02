@@ -16,13 +16,13 @@ class Controller extends DefaultActor {
     int numberOfFloors
     List elevatorList = []
     private List commandList = []
-    private CommandParser inputParser
+    private CommandParser commandParser
 
     Controller(BufferedReader reader, Actor clock) {
         this.clock = clock
         parseHeader(reader)
-        inputParser = new CommandParser(reader)
         initElevators(reader)
+        commandParser = new CommandParser(reader)
         log.info("Finished initializing controller")
     }
 
@@ -43,24 +43,39 @@ class Controller extends DefaultActor {
      * @param reader input to read configuration from
      */
     void parseHeader(reader) {
-        this.clock.startTime = reader.readLine().split("\t")[1]
-        this.numberOfFloors = reader.readLine().split("\t")[1].toInteger()
-        this.numberOfElevators = reader.readLine().split("\t")[1].toInteger()
+        clock.send readStartTime(reader)
+        this.numberOfFloors = readNumberOfFloors(reader)
+        this.numberOfElevators = readNumberOfElevators(reader)
+    }
+
+    private def readNumberOfElevators(reader) {
+        reader.readLine().split("\t")[1].toInteger()
+    }
+
+    private def readNumberOfFloors(reader) {
+        reader.readLine().split("\t")[1].toInteger()
+    }
+
+    private def readStartTime(reader) {
+        reader.readLine()
     }
 
     void act() {
         loop() {
             clock.send "next"
             react {
-                switch (it) {
-                    case "finish":
-                        terminate()
-                    break;
-                    default:
-                        elevatorList.each { def elevator -> elevator.send it }
-                        println "cycle: $it"
-
+                def command = commandParser.getNextCommand(it)
+                if(command instanceof Terminate)
+                    System.exit(1)
+                else if(command instanceof Display)
+                    display()
+                else if(command instanceof Status)
+                    status()
+                else if(command != null) {
+                    elevatorList.each { def elevator -> elevator.send command}
+                    println "Command received: " + command
                 }
+                println "time: $it"
             }
         }
     }
