@@ -32,6 +32,7 @@ class Elevator extends DefaultActor {
     List passengers = new ArrayList()
     List callList
     List currentCalls
+    Command respondingCall
     boolean operational
     boolean moving
 
@@ -48,50 +49,141 @@ class Elevator extends DefaultActor {
         }
     }
 
-    void makeMove() {
+    /**
+     * Runs through the logic required for each tick of the clock
+     */
+    void respondToClock() {
         if (!operational) {return}
-        if (moving()) {incrementTravelTime()}
-        if (!moving()) {incrementWait()}
+        if (moving()) {
+            move()
+        }
+        else {
+            decrementWait()
+        }
+        if (travelTime == 0) {
+            letPassengersOff()
+            letPassengersPassengerOn()
+        }
         if (!destinationValid()) {updateDestination()}
-        if (!reachedDestination()) {letPassengersOn()}
     }
 
-    void incrementWait() {
-        waitTime+=1
-        if (waitTime == 5) {
-            waitTime = 0
+    /**
+     * Decrements the waiting time
+     *
+     * If full waiting time has elapsed set the elevator to moving
+     */
+    private void decrementWait() {
+        waitTime-=1
+        if (waitTime == 0) {
             moving = true
         }
     }
 
-    private void incrementTravelTime() {
-        travelTime+=1
-        if (travelTime == 10) {
-            changeFloor()
-            travelTime = 0
-            moving = false
-        }
-    }
-
-    private changeFloor() {
+    /**
+     * Moves the elevator one second in the relevant direction
+     *
+     * If elevator has reached a new floor, change the current floor
+     * and check if there are passengers on that floor
+     */
+    private void move() {
         if (direction == "up") {
-            currentFloor += 1
+            incrementTravelTime()
         }
         else {
-            currentFloor -= 1
+            decrementTravelTime()
+        }
+        if (travelTime % 10 == 0) {
+            if (travelTime != 0) {
+                changeFloor()
+            }
         }
     }
 
-    private boolean destinationValid() {
-        return
+    /**
+     * Move the elevator up one second
+     */
+    private void incrementTravelTime() {
+        travelTime+=1
     }
 
-    void updateDestination() {
+    /**
+     * Move the elevator down one second
+     */
+    private void decrementTravelTime() {
+        travelTime-=1
+    }
+
+    /**
+     * Change the current floor number
+     * If elevator is moving up add one to the floor number
+     * If elevator is moving down subtract one from the floor number
+     */
+    private void changeFloor() {
+        currentFloor = (direction == "up") ? currentFloor + 1 : currentFloor - 1
+        travelTime = 0
+    }
+
+    /**
+     * Runs through list of outstanding calls and checks if on same floor
+     * If call on the same floor add to list of current calls,
+     * set answered to true and set the elevator to waiting
+     */
+    private void letPassengersPassengerOn() {
+        callList.each {
+            if (it.getFloor() == currentFloor && !it.getAnswered()) {
+                currentCalls[currentCalls.size()] = it
+                it.setAnswered = true
+                setWaiting()
+            }
+        }
+    }
+
+    /**
+     * Runs through list of current calls
+     * If passenger has reached destination then let them off and
+     * increment number of passengers delivered and set the elevator to waiting
+     */
+    private void letPassengersPassengerOff() {
+        currentCalls.each {
+            if (it.getFloor() == currentFloor) {
+                passengersDelivered++
+                it.deletePassenger()
+                setWaiting()
+            }
+        }
+    }
+
+    /**
+     * Set the elevator to a waiting state
+     * Sets moving to false and if waiting time has dropped to 0 reset it to 5
+     */
+    private void setWaiting() {
+        moving = false
+        if (waitTime == 0) {
+           waitTime = 5
+        }
+    }
+
+    /**
+     * Checks if current destination is still valid
+     *
+     * @return true if it is
+     */
+    private boolean destinationValid() {
+        return (respondingCall != null || !respondingCall.getAnswered())
+    }
+
+    /**
+     * Updates the destination
+     *
+     * to complete
+     */
+    private void updateDestination() {
         if (callInSameDirection()) {
             return
         }
-        if (currentCallList.size() > 0) {
-            destination = currentCallList[0].getPassenger().getFloor()
+        if (currentCalls.size() > 0) {
+            destination = currentCalls[0].getPassenger().getFloor()
             return
         }
         if (callInOppositeDirection()) {
@@ -99,11 +191,22 @@ class Elevator extends DefaultActor {
         }
     }
 
-    void addCall(Command call) {
+    /**
+     * Adds a new call to the call list
+     *
+     * @param call The call to be added
+     */
+    public void addCall(Command call) {
         callList[callList.size()] = call
     }
 
-    boolean callInSameDirection() {
+    /**
+     * Checks if there is a call in the same direction the
+     * elevator is moving
+     *
+     * @return true if a call exists
+     */
+    private boolean callInSameDirection() {
         if (direction == "up") {
             return callUpFromFloor()
         }
@@ -112,7 +215,13 @@ class Elevator extends DefaultActor {
         }
     }
 
-    boolean callInOppositeDirection() {
+    /**
+     * Checks if there is a call in the opposite direction the
+     * elevator is moving
+     *
+     * @return true if a call exists
+     */
+    private boolean callInOppositeDirection() {
         if (direction == "up") {
             return callDownFromFloor()
         }
@@ -121,7 +230,13 @@ class Elevator extends DefaultActor {
         }
     }
 
-    boolean callUpFromFloor() {
+    /**
+     * Checks if there is a call up from the
+     * elevator's current location
+     *
+     * @return true if a call exists
+     */
+    private boolean callUpFromFloor() {
         callList.each() {
             if (it.getFloor() > floor) {
                 destination = it.getFloor()
@@ -131,7 +246,13 @@ class Elevator extends DefaultActor {
         return false
     }
 
-    boolean callDownFromFloor() {
+    /**
+     * Checks if there is a call down from the
+     * elevator's current location
+     *
+     * @return true if a call exists
+     */
+     private boolean callDownFromFloor() {
         callList.each() {
             if (it.getFloor() < floor) {
                 destination = it.getFloor()
