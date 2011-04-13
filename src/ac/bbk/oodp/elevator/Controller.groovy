@@ -71,6 +71,10 @@ class Controller extends DefaultActor {
                     display()
                 else if(command instanceof Status)
                     status()
+                else if(command instanceof Call) {
+                    Elevator.addCall command
+                    println "Command received: " + command
+                }
                 else if(command != null) {
                     elevatorList.each { def elevator -> elevator.send command}
                     println "Command received: " + command
@@ -81,9 +85,7 @@ class Controller extends DefaultActor {
     }
 
     private passCall(Command call) {
-        elevatorList.each() {
-            elevator.addCall(call)
-        }
+        Elevator.addCall(call)
     }
 
     void display() {

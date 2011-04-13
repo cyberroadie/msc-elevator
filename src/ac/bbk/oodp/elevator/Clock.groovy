@@ -23,7 +23,7 @@ class Clock extends DefaultActor {
                     increaseTime()
                     reply getNextStringTime()
                 } else if(message.startsWith("StartTime:"))
-                    initilizeClock(message)
+                    initializeClock(message)
             }
         }
     }
@@ -32,7 +32,7 @@ class Clock extends DefaultActor {
         startTime = startTime.plusSeconds(1)
     }
 
-    void initilizeClock(String timeString) {
+    void initializeClock(String timeString) {
         DateTimeFormatter fmt = DateTimeFormat.forPattern("HH:mm:ss");
         startTime = fmt.parseDateTime(timeString.split("\t")[1])
     }

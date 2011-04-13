@@ -29,12 +29,11 @@ class Elevator extends DefaultActor {
     int waitTime = 0
     int travelTime = 0
     String direction = "none"
-    List passengers = new ArrayList()
-    List callList
-    List currentCalls
+    static List callList = new ArrayList()
+    List currentCalls  = new ArrayList()
     Command respondingCall
-    boolean operational
-    boolean moving
+    boolean operational = true
+    boolean moving = false
 
     Elevator(int elevator, int startingFloor) {
         elevatorNumber = elevator
@@ -54,15 +53,11 @@ class Elevator extends DefaultActor {
      */
     void respondToClock() {
         if (!operational) {return}
-        if (moving()) {
-            move()
-        }
-        else {
-            decrementWait()
-        }
+        move()
+        decrementWait()
         if (travelTime == 0) {
-            letPassengersOff()
-            letPassengersPassengerOn()
+            letPassengerOff()
+            letPassengerOn()
         }
         if (!destinationValid()) {updateDestination()}
     }
@@ -73,10 +68,9 @@ class Elevator extends DefaultActor {
      * If full waiting time has elapsed set the elevator to moving
      */
     private void decrementWait() {
+        if (moving) return
         waitTime-=1
-        if (waitTime == 0) {
-            moving = true
-        }
+        if (waitTime == 0) moving = true
     }
 
     /**
@@ -86,16 +80,13 @@ class Elevator extends DefaultActor {
      * and check if there are passengers on that floor
      */
     private void move() {
-        if (direction == "up") {
-            incrementTravelTime()
-        }
-        else {
-            decrementTravelTime()
-        }
+        if (!moving) return
+
+        if (direction == "up") incrementTravelTime()
+        else decrementTravelTime()
+
         if (travelTime % 10 == 0) {
-            if (travelTime != 0) {
-                changeFloor()
-            }
+            if (travelTime != 0) changeFloor()
         }
     }
 
@@ -120,6 +111,7 @@ class Elevator extends DefaultActor {
      */
     private void changeFloor() {
         currentFloor = (direction == "up") ? currentFloor + 1 : currentFloor - 1
+        floorsTravelled++
         travelTime = 0
     }
 
@@ -128,11 +120,11 @@ class Elevator extends DefaultActor {
      * If call on the same floor add to list of current calls,
      * set answered to true and set the elevator to waiting
      */
-    private void letPassengersPassengerOn() {
+    private void letPassengerOn() {
         callList.each {
             if (it.getFloor() == currentFloor && !it.getAnswered()) {
                 currentCalls[currentCalls.size()] = it
-                it.setAnswered = true
+                it.answered = true
                 setWaiting()
             }
         }
@@ -143,11 +135,12 @@ class Elevator extends DefaultActor {
      * If passenger has reached destination then let them off and
      * increment number of passengers delivered and set the elevator to waiting
      */
-    private void letPassengersPassengerOff() {
+    private void letPassengerOff() {
         currentCalls.each {
-            if (it.getFloor() == currentFloor) {
+            if (it.dest == currentFloor) {
                 passengersDelivered++
-                it.deletePassenger()
+                currentCalls = currentCalls.minus(it)
+                callList = callList.minus(it)
                 setWaiting()
             }
         }
@@ -170,7 +163,7 @@ class Elevator extends DefaultActor {
      * @return true if it is
      */
     private boolean destinationValid() {
-        return (respondingCall != null || !respondingCall.getAnswered())
+        return (callList.contains(respondingCall))
     }
 
     /**
@@ -184,6 +177,7 @@ class Elevator extends DefaultActor {
         }
         if (currentCalls.size() > 0) {
             destination = currentCalls[0].getPassenger().getFloor()
+            respondingCall = currentCalls[0]
             return
         }
         if (callInOppositeDirection()) {
@@ -196,7 +190,7 @@ class Elevator extends DefaultActor {
      *
      * @param call The call to be added
      */
-    public void addCall(Command call) {
+    public static void addCall(Command call) {
         callList[callList.size()] = call
     }
 
@@ -237,9 +231,10 @@ class Elevator extends DefaultActor {
      * @return true if a call exists
      */
     private boolean callUpFromFloor() {
-        callList.each() {
-            if (it.getFloor() > floor) {
-                destination = it.getFloor()
+        for (i in 0..callList.size()-1) {
+            if (callList[i].floor > currentFloor) {
+                destination = callList[i].floor
+                respondingCall = callList[i]
                 return true
             }
         }
@@ -253,9 +248,10 @@ class Elevator extends DefaultActor {
      * @return true if a call exists
      */
      private boolean callDownFromFloor() {
-        callList.each() {
-            if (it.getFloor() < floor) {
-                destination = it.getFloor()
+        for (i in 0..callList.size()-1) {
+            if (callList[i].floor < currentFloor) {
+                destination = callList[i].floor
+                respondingCall = callList[i]
                 return true
             }
         }
