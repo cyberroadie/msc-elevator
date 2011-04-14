@@ -32,7 +32,7 @@ class Clock extends DefaultActor {
         startTime = startTime.plusSeconds(1)
     }
 
-    void initializeClock(String timeString) {
+    public void initializeClock(String timeString) {
         DateTimeFormatter fmt = DateTimeFormat.forPattern("HH:mm:ss");
         startTime = fmt.parseDateTime(timeString.split("\t")[1])
     }
