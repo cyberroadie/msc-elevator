@@ -275,11 +275,15 @@ class Elevator extends DefaultActor {
         currentCalls.collect( passengerNames ) {
             it.passenger.name
         }
-        "Elevator Number: ${elevatorNumber}\nCurrent location: ${}\nCurrent passengers: ${passengerNames.join(', ')}"
+        def floor
+        if (travelTime == 0) floor = currentFloor
+        else if (travelTime > 0) floor = "between ${currentFloor} and ${currentFloor+1}"
+        else if (travelTime < 0) floor = "between ${currentFloor} and ${currentFloor-1}"
+        "Elevator Number: ${elevatorNumber}\nCurrent location: ${currentFloor}\nCurrent passengers: ${passengerNames.join(', ')}"
     }
 
     String stats() {
-        "Elevator Number: ${elevatorNumber}\nNo of passengers delivered: ${passengersDelivered}\nCurrent passengers: ${passengers.size()}\nDistance Travelled: ${distanceTravelled}"
+        "Elevator Number: ${elevatorNumber}\nNo of passengers delivered: ${passengersDelivered}\nCurrent passengers: ${currentCalls.size()}\nDistance Travelled: ${distanceTravelled}"
     }
 
 }
