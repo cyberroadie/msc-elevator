@@ -231,11 +231,13 @@ class Elevator extends DefaultActor {
      * @return true if a call exists
      */
     private boolean callUpFromFloor() {
-        for (i in 0..callList.size()-1) {
-            if (callList[i].floor > currentFloor) {
-                destination = callList[i].floor
-                respondingCall = callList[i]
-                return true
+        if (callList.size() > 0) {
+            for (i in 0..callList.size()-1) {
+                if (callList[i].floor > currentFloor) {
+                    destination = callList[i].floor
+                    respondingCall = callList[i]
+                    return true
+                }
             }
         }
         return false
@@ -248,11 +250,13 @@ class Elevator extends DefaultActor {
      * @return true if a call exists
      */
      private boolean callDownFromFloor() {
-        for (i in 0..callList.size()-1) {
-            if (callList[i].floor < currentFloor) {
-                destination = callList[i].floor
-                respondingCall = callList[i]
-                return true
+         if (callList.size() > 0) {
+            for (i in 0..callList.size()-1) {
+                if (callList[i].floor < currentFloor) {
+                    destination = callList[i].floor
+                    respondingCall = callList[i]
+                    return true
+                }
             }
         }
         return false
