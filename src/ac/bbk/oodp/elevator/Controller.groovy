@@ -73,6 +73,10 @@ class Controller {
             else if (command instanceof Call) {
                 Elevator.addCall command
                 println "Command received: " + command
+            } else if (command instanceof Fail) {
+                elevatorList.get(((Fail) command).elevatorNumber).fail()
+            } else if(command instanceof Fix) {
+                elevatorList.get(((Fix) command).elevatorNumber).fix()
             }
             elevatorList.each { def elevator -> elevator.respondToClock() }
         }
