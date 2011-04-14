@@ -1,0 +1,10 @@
+StartTime: 	14:00:00
+NumberOfFloors:	12
+NumberOfElevators:	1
+init	0	1
+display	14:00:01
+call	Fred	12	14:00:05	1
+display 	14:15:01
+display 	14:16:00
+display 	14:30:00
+stats 	14:39:00

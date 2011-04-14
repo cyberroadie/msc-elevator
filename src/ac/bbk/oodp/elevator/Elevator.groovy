@@ -82,12 +82,13 @@ class Elevator extends DefaultActor {
     private void move() {
         if (!moving) return
 
-        if (direction == "up") incrementTravelTime()
-        else decrementTravelTime()
+        if (direction == "up")
+            incrementTravelTime()
+        else
+            decrementTravelTime()
 
-        if (travelTime % 10 == 0) {
+        if (travelTime % 10 == 0)
             if (travelTime != 0) changeFloor()
-        }
     }
 
     /**
@@ -172,12 +173,17 @@ class Elevator extends DefaultActor {
      * to complete
      */
     private void updateDestination() {
-        if (callInSameDirection()) {
+        if (moving && callInSameDirection()) {
             return
         }
         else if (currentCalls.size() > 0) {
             destination = currentCalls[0].dest
-            direction = destination > currentFloor ? "up" : "down"
+            if(destination == currentFloor)
+                moving = false
+            else {
+                direction = destination > currentFloor ? "up" : "down"
+                moving = true
+            }
             respondingCall = currentCalls[0]
             return
         }
@@ -185,10 +191,14 @@ class Elevator extends DefaultActor {
             return
         }
         else if (callList.size > 0) {
-            destination = callList[0].dest
-            direction = destination > currentFloor ? "up" : "down"
+            destination = callList[0].floor
+            if(destination == currentFloor)
+                moving = false
+            else  {
+                direction = destination > currentFloor ? "up" : "down"
+                moving = true
+            }
             respondingCall = currentCalls[0]
-            moving = true
             return
         }
     }

@@ -103,9 +103,11 @@ class Controller {
      * of the names of all current passengers
      */
     void display() {
+        println "--------------- Display -------------"
         elevatorList.each() { elevator ->
             println elevator.display()
         }
+        println "-------------------------------------"
     }
 
     /**
@@ -114,9 +116,11 @@ class Controller {
      * and the total distance the elevator has traveled since the beginning of the simulation
      */
     void status() {
+        println "--------------- Stats ---------------"
         elevatorList.each() { elevator ->
             println elevator.stats()
         }
+        println "-------------------------------------"
     }
 }
 
