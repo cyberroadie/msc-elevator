@@ -12,20 +12,13 @@ import org.joda.time.format.DateTimeFormatter
  * Date: 21/02/2011
  */
 
-class Clock extends DefaultActor {
+class Clock {
     DateTime startTime
     int cycle;
 
-    void act() {
-        loop {
-            react {String message ->
-                if(message == 'next') {
-                    increaseTime()
-                    reply getNextStringTime()
-                } else if(message.startsWith("StartTime:"))
-                    initializeClock(message)
-            }
-        }
+    def next() {
+        increaseTime()
+        return getNextStringTime()
     }
 
     void increaseTime() {
@@ -40,4 +33,5 @@ class Clock extends DefaultActor {
     String getNextStringTime() {
         startTime.toString("HH:mm:ss")
     }
+
 }

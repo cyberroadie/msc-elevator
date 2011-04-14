@@ -7,19 +7,18 @@ import groovyx.gpars.actor.Actor
  * @author Olivier Van Acker, Richard Brown
  * Date: 21/02/2011
  */
-class Controller extends DefaultActor {
+class Controller {
 
     def log = GroovyLog.newInstance(Controller.class)
 
-    Clock clock
+    Clock clock = new Clock()
     int numberOfElevators
     int numberOfFloors
     List elevatorList = []
     private List commandList = []
     private CommandParser commandParser
 
-    Controller(BufferedReader reader, Actor clock) {
-        this.clock = clock
+    Controller(BufferedReader reader) {
         parseHeader(reader)
         initElevators(reader)
         commandParser = new CommandParser(reader)
@@ -32,9 +31,9 @@ class Controller extends DefaultActor {
      * @param reader input to read configuration from
      */
     void initElevators(reader) {
-        for(i in 1..numberOfElevators) {
+        for (i in 1..numberOfElevators) {
             def lineSplit = reader.readLine().split("\t")
-            this.elevatorList.add((new Elevator(lineSplit[1].toInteger(), lineSplit[2].toInteger())).start())
+            this.elevatorList.add((new Elevator(lineSplit[1].toInteger(), lineSplit[2].toInteger())))
         }
     }
 
@@ -43,7 +42,7 @@ class Controller extends DefaultActor {
      * @param reader input to read configuration from
      */
     void parseHeader(reader) {
-        clock.send readStartTime(reader)
+        clock.initializeClock(readStartTime(reader))
         this.numberOfFloors = readNumberOfFloors(reader)
         this.numberOfElevators = readNumberOfElevators(reader)
     }
@@ -60,27 +59,22 @@ class Controller extends DefaultActor {
         reader.readLine()
     }
 
-    void act() {
-        loop() {
-            clock.send "next"
-            react {
-                def command = commandParser.getNextCommand(it)
-                if(command instanceof Terminate)
-                    System.exit(1)
-                else if(command instanceof Display)
-                    display()
-                else if(command instanceof Status)
-                    status()
-                else if(command instanceof Call) {
-                    Elevator.addCall command
-                    println "Command received: " + command
-                }
-                else if(command != null) {
-                    elevatorList.each { def elevator -> elevator.send command}
-                    println "Command received: " + command
-                }
-                println "time: $it"
+    void start() {
+        while (true) {
+            def time = clock.next()
+            def command = commandParser.getNextCommand(time)
+            println command
+            if (command instanceof Terminate)
+                System.exit(1)
+            else if (command instanceof Display)
+                display()
+            else if (command instanceof Status)
+                status()
+            else if (command instanceof Call) {
+                Elevator.addCall command
+                println "Command received: " + command
             }
+            elevatorList.each { def elevator -> elevator.respondToClock() }
         }
     }
 
