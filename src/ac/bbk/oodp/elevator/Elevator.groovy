@@ -258,8 +258,20 @@ class Elevator extends DefaultActor {
         return false
     }
 
+    void fail() {
+        operational = false
+    }
+
+    void fix() {
+        operational = true
+    }
+
     String display() {
-        "Elevator Number: ${elevatorNumber}\nCurrent location: ${}\nCurrent passengers: ${passengers.join(', ')}"
+        def passengerNames = []
+        currentCalls.collect( passengerNames ) {
+            it.passenger.name
+        }
+        "Elevator Number: ${elevatorNumber}\nCurrent location: ${}\nCurrent passengers: ${passengerNames.join(', ')}"
     }
 
     String stats() {
