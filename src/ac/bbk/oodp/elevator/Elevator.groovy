@@ -23,9 +23,9 @@ class Elevator extends DefaultActor {
     int elevatorNumber
     int currentFloor
     int destination
-    int floorsTravelled
-    int passengersDelivered
-    int distanceTravelled
+    int floorsTravelled = 0
+    int passengersDelivered = 0
+    int distanceTravelled = 0
     int waitTime = 0
     int travelTime = 0
     String direction = "none"
@@ -111,7 +111,7 @@ class Elevator extends DefaultActor {
      */
     private void changeFloor() {
         currentFloor = (direction == "up") ? currentFloor + 1 : currentFloor - 1
-        floorsTravelled++
+        distanceTravelled+=1
         travelTime = 0
     }
 
@@ -138,7 +138,7 @@ class Elevator extends DefaultActor {
     private void letPassengerOff() {
         currentCalls.each {
             if (it.dest == currentFloor) {
-                passengersDelivered++
+                passengersDelivered+=1
                 currentCalls = currentCalls.minus(it)
                 callList = callList.minus(it)
                 setWaiting()
@@ -163,7 +163,7 @@ class Elevator extends DefaultActor {
      * @return true if it is
      */
     private boolean destinationValid() {
-        return (callList.contains(respondingCall))
+        return (respondingCall != null && !respondingCall.answered)
     }
 
     /**
@@ -175,12 +175,20 @@ class Elevator extends DefaultActor {
         if (callInSameDirection()) {
             return
         }
-        if (currentCalls.size() > 0) {
-            destination = currentCalls[0].getPassenger().getFloor()
+        else if (currentCalls.size() > 0) {
+            destination = currentCalls[0].dest
+            direction = destination > currentFloor ? "up" : "down"
             respondingCall = currentCalls[0]
             return
         }
-        if (callInOppositeDirection()) {
+        else if (callInOppositeDirection()) {
+            return
+        }
+        else if (callList.size > 0) {
+            destination = callList[0].dest
+            direction = destination > currentFloor ? "up" : "down"
+            respondingCall = currentCalls[0]
+            moving = true
             return
         }
     }
@@ -204,7 +212,7 @@ class Elevator extends DefaultActor {
         if (direction == "up") {
             return callUpFromFloor()
         }
-        else {
+        else if (direction == "down") {
             return callDownFromFloor()
         }
     }
@@ -219,7 +227,7 @@ class Elevator extends DefaultActor {
         if (direction == "up") {
             return callDownFromFloor()
         }
-        else {
+        else if (direction == "down") {
             return callUpFromFloor()
         }
     }
@@ -234,8 +242,9 @@ class Elevator extends DefaultActor {
         if (callList.size() > 0) {
             for (i in 0..callList.size()-1) {
                 if (callList[i].floor > currentFloor) {
-                    destination = callList[i].floor
+                    destination = callList[i].dest
                     respondingCall = callList[i]
+                    direction = "up"
                     return true
                 }
             }
@@ -253,8 +262,9 @@ class Elevator extends DefaultActor {
          if (callList.size() > 0) {
             for (i in 0..callList.size()-1) {
                 if (callList[i].floor < currentFloor) {
-                    destination = callList[i].floor
+                    destination = callList[i].dest
                     respondingCall = callList[i]
+                    direction = "down"
                     return true
                 }
             }
