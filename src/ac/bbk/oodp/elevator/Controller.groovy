@@ -63,15 +63,19 @@ class Controller {
         while (true) {
             def time = clock.next()
             def command = commandParser.getNextCommand(time)
-            if (command instanceof Terminate)
-                System.exit(1)
+            if (command instanceof Terminate) {
+                while(true) {
+                    if(Elevator.callList.size() == 0)
+                        System.exit(1)
+                    elevatorList.each { def elevator -> elevator.respondToClock() }
+                }
+            }
             else if (command instanceof Display)
                 display()
             else if (command instanceof Status)
                 status()
             else if (command instanceof Call) {
                 Elevator.addCall command
-                println "Command received: " + command
             } else if (command instanceof Fail) {
                 elevatorList.get(((Fail) command).elevatorNumber).fail()
             } else if(command instanceof Fix) {
