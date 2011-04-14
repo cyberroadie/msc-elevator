@@ -1,6 +1,6 @@
 StartTime: 	14:00:00
 NumberOfFloors:	12
-NumberOfElevators:		3
+NumberOfElevators:	3
 init	0	1
 init	1	2
 init	2	3
