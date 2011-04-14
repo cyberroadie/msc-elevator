@@ -19,7 +19,7 @@ class Call extends Command {
     Call(String commandString) throws CommandException {
         List command = commandString.split('\t')
         if(command.size() != 5)
-            throw new CommandException("Incorrect number of commands in string")
+            throw new CommandException("Incorrect number of commands in string: $commandString")
         try {
             this.passenger = new Passenger(command[1])
             this.floor = command[2].toInteger()
@@ -37,7 +37,7 @@ class Fail extends Command {
     Fail(String commandString) throws CommandException {
         List command = commandString.split('\t')
         if(command.size() != 3)
-            throw new CommandException("Incorrect number of commands in string")
+            throw new CommandException("Incorrect number of commands in string: $commandString")
         try {
             this.elevatorNumber = command[1].toInteger()
             this.time = command[2]
@@ -53,7 +53,7 @@ class Fix extends Command {
     Fix(String commandString) {
         List command = commandString.split('\t')
         if(command.size() != 3)
-            throw new CommandException("Incorrect number of commands in string")
+            throw new CommandException("Incorrect number of commands in string: $commandString")
         try {
             this.elevatorNumber = command[1].toInteger()
             this.time = command[2]
@@ -68,7 +68,7 @@ class Display extends Command {
     Display(String commandString) {
         List command = commandString.split('\t')
         if(command.size() != 2)
-            throw new CommandException("Incorrect number of commands in string")
+            throw new CommandException("Incorrect number of commands in string: $commandString")
         try {
             this.time = command[1]
         } catch (Exception ex) {
@@ -82,7 +82,7 @@ class Status extends Command {
     Status(String commandString) {
         List command = commandString.split('\t')
         if(command.size() != 2)
-            throw new CommandException("Incorrect number of commands in string")
+            throw new CommandException("Incorrect number of commands in string: $commandString")
         try {
             this.time = command[1]
         } catch (Exception ex) {
