@@ -7,13 +7,8 @@ package ac.bbk.oodp.elevator
  */
 class CommandParser {
 
-    List lines
     def reader
-    List setup
-    List init
-    List commands
-    List errorLog
-    Command currentCommand
+    private Command currentCommand
 
     /**
      * Constructor
