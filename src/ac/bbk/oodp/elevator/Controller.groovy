@@ -63,7 +63,6 @@ class Controller {
         while (true) {
             def time = clock.next()
             def command = commandParser.getNextCommand(time)
-            println command
             if (command instanceof Terminate)
                 System.exit(1)
             else if (command instanceof Display)
@@ -80,10 +79,6 @@ class Controller {
             }
             elevatorList.each { def elevator -> elevator.respondToClock() }
         }
-    }
-
-    private passCall(Command call) {
-        Elevator.addCall(call)
     }
 
     void display() {
