@@ -30,14 +30,17 @@ class Elevator {
     int travelTime = 0
     String direction = "NONE"
     static List callList = new ArrayList()
+    static def floorList = [:]
     List currentCalls  = new ArrayList()
     Command respondingCall
     boolean operational = true
     boolean moving = false
+    boolean betweenFloors = false
 
     Elevator(int elevator, int startingFloor) {
         elevatorNumber = elevator
         currentFloor = startingFloor
+        floorList.put((elevatorNumber),currentFloor)
         println "init\t$elevatorNumber\t$currentFloor"
     }
 
@@ -61,9 +64,9 @@ class Elevator {
      * If full waiting time has elapsed set the elevator to moving
      */
     private void decrementWait() {
-        if (moving || direction == "NONE") return
+        if (moving || direction == "NONE" || betweenFloors) return
         waitTime--
-        if (waitTime <= 0) moving = true
+        if (waitTime == 0) startMoving()
     }
 
     /**
@@ -98,6 +101,12 @@ class Elevator {
         travelTime-=1
     }
 
+    private void startMoving() {
+        moving = true
+        betweenFloors = true
+        floorList[(elevatorNumber)] = null
+    }
+
     /**
      * Change the current floor number
      * If elevator is moving up add one to the floor number
@@ -115,6 +124,7 @@ class Elevator {
      * set answered to true and set the elevator to waiting
      */
     private void letPassengerOn() {
+        if (moving && floorList.containsValue(currentFloor)) return
         callList.each {
             if (it.getFloor() == currentFloor && !it.getAnswered()) {
                 currentCalls[currentCalls.size()] = it
@@ -146,6 +156,8 @@ class Elevator {
      */
     private void setWaiting() {
         moving = false
+        betweenFloors = false
+        floorList[(elevatorNumber)] = currentFloor
         if (waitTime == 0) {
            waitTime = 5
         }
@@ -175,7 +187,7 @@ class Elevator {
                 moving = false
             else {
                 direction = destination > currentFloor ? "UP" : "DOWN"
-                moving = true
+                if (!moving) startMoving()
             }
             respondingCall = currentCalls[0]
             return
@@ -189,7 +201,7 @@ class Elevator {
                 moving = false
             else  {
                 direction = destination > currentFloor ? "UP" : "DOWN"
-                moving = true
+                if (!moving) startMoving()
             }
             respondingCall = callList[0]
             return
@@ -249,6 +261,7 @@ class Elevator {
                     destination = callList[i].floor
                     respondingCall = callList[i]
                     direction = "UP"
+                    if (!moving) startMoving()
                     return true
                 }
             }
@@ -269,6 +282,7 @@ class Elevator {
                     destination = callList[i].floor
                     respondingCall = callList[i]
                     direction = "DOWN"
+                    if (!moving) startMoving()
                     return true
                 }
             }
