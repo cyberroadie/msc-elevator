@@ -87,6 +87,7 @@ class Controller {
                 status()
             else if (command instanceof Call) {
                 Elevator.addCall command
+                displayCall(command, time)
             } else if (command instanceof Fail) {
                 elevatorList.get(((Fail) command).elevatorNumber).fail()
             } else if(command instanceof Fix) {
@@ -94,6 +95,10 @@ class Controller {
             }
             elevatorList.each { def elevator -> elevator.respondToClock() }
         }
+    }
+
+    void displayCall(Call call, String time) {
+        println "call\t${call.passenger.name}\t${call.floor}\t$time\t${call.dest}"
     }
 
     /**

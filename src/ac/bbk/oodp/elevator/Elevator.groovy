@@ -18,7 +18,7 @@ import groovyx.gpars.actor.DefaultActor
  * @author Olivier Van Acker, Richard Brown
  * Date: 21/02/2011
  */
-class Elevator extends DefaultActor {
+class Elevator {
 
     int elevatorNumber
     int currentFloor
@@ -38,14 +38,7 @@ class Elevator extends DefaultActor {
     Elevator(int elevator, int startingFloor) {
         elevatorNumber = elevator
         currentFloor = startingFloor
-    }
-
-    void act() {
-        loop() {
-            react {
-                println "Elevator $elevatorNumber received command $it"
-            }
-        }
+        println "init\t$elevatorNumber\t$currentFloor"
     }
 
     /**
@@ -290,20 +283,26 @@ class Elevator extends DefaultActor {
         operational = true
     }
 
+
+    def getStatus() {
+        return (operational ? "WORKING" : "BROKEN")
+    }
+
     String display() {
+        "Elevator\t$elevatorNumber\tfloor\t$currentFloor\tdestination\t$destination\tdirection\t$direction\t\tstatus\t${getStatus()}\tpassengers:\t[${getPassengerNames()}]"
+    }
+
+    String stats() {
+        """Elevator\t$elevatorNumber\tdelivered\t$passengersDelivered\tpassengers\t[${getPassengerNames()}]\tdistance\t$distanceTravelled"""
+    }
+
+     def getPassengerNames() {
         def passengerNames = []
         currentCalls.collect( passengerNames ) {
             it.passenger.name
         }
-        def floor
-        if (travelTime == 0) floor = currentFloor
-        else if (travelTime > 0) floor = "between ${currentFloor} and ${currentFloor+1}"
-        else if (travelTime < 0) floor = "between ${currentFloor} and ${currentFloor-1}"
-        "Elevator Number: ${elevatorNumber}\nCurrent location: ${currentFloor}\nCurrent passengers: ${passengerNames.join(', ')}"
+        if(passengerNames.size() == 0)
+            return ""
+        return passengerNames.join(', ')
     }
-
-    String stats() {
-        "Elevator Number: ${elevatorNumber}\nNo of passengers delivered: ${passengersDelivered}\nCurrent passengers: ${currentCalls.size()}\nDistance Travelled: ${distanceTravelled}"
-    }
-
 }
