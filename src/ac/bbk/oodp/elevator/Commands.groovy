@@ -14,7 +14,6 @@ class Call extends Command {
     Passenger passenger
     int floor
     int dest
-    boolean answered = false
 
     Call(String commandString) throws CommandException {
         List command = commandString.split('\t')

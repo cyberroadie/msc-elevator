@@ -29,10 +29,8 @@ class Elevator {
     int waitTime = 0
     int travelTime = 0
     String direction = "NONE"
-    static List callList = new ArrayList()
-    static def floorList = [:]
-    List currentCalls  = new ArrayList()
-    Command respondingCall
+    static List waitingFloors = []
+    List currentCalls  = []
     boolean operational = true
     boolean moving = false
     boolean betweenFloors = false
@@ -40,7 +38,6 @@ class Elevator {
     Elevator(int elevator, int startingFloor) {
         elevatorNumber = elevator
         currentFloor = startingFloor
-        floorList.put((elevatorNumber),currentFloor)
         println "init\t$elevatorNumber\t$currentFloor"
     }
 
@@ -53,9 +50,13 @@ class Elevator {
         decrementWait()
         if (travelTime == 0) {
             letPassengerOff()
-            letPassengerOn()
         }
         if (!destinationValid()) {updateDestination()}
+    }
+
+    public void sendCall(Command call) {
+        currentCalls.add(call)
+        setWaiting()
     }
 
     /**
@@ -92,6 +93,7 @@ class Elevator {
      */
     private void incrementTravelTime() {
         travelTime+=1
+        betweenFloors = true
     }
 
     /**
@@ -99,12 +101,12 @@ class Elevator {
      */
     private void decrementTravelTime() {
         travelTime-=1
+        betweenFloors = true
     }
 
     private void startMoving() {
         moving = true
         betweenFloors = true
-        floorList[(elevatorNumber)] = null
     }
 
     /**
@@ -116,22 +118,7 @@ class Elevator {
         currentFloor = (direction == "UP") ? currentFloor + 1 : currentFloor - 1
         distanceTravelled++
         travelTime = 0
-    }
-
-    /**
-     * Runs through list of outstanding calls and checks if on same floor
-     * If call on the same floor add to list of current calls,
-     * set answered to true and set the elevator to waiting
-     */
-    private void letPassengerOn() {
-        if (moving && floorList.containsValue(currentFloor)) return
-        callList.each {
-            if (it.getFloor() == currentFloor && !it.getAnswered()) {
-                currentCalls[currentCalls.size()] = it
-                it.answered = true
-                setWaiting()
-            }
-        }
+        betweenFloors = false
     }
 
     /**
@@ -144,7 +131,6 @@ class Elevator {
             if (it.dest == currentFloor) {
                 passengersDelivered++
                 currentCalls = currentCalls.minus(it)
-                callList = callList.minus(it)
                 setWaiting()
             }
         }
@@ -157,7 +143,6 @@ class Elevator {
     private void setWaiting() {
         moving = false
         betweenFloors = false
-        floorList[(elevatorNumber)] = currentFloor
         if (waitTime == 0) {
            waitTime = 5
         }
@@ -169,7 +154,7 @@ class Elevator {
      * @return true if it is
      */
     private boolean destinationValid() {
-        return (respondingCall != null && !respondingCall.answered)
+        return (waitingFloors.contains(destination))
     }
 
     /**
@@ -189,33 +174,22 @@ class Elevator {
                 direction = destination > currentFloor ? "UP" : "DOWN"
                 if (!moving) startMoving()
             }
-            respondingCall = currentCalls[0]
             return
         }
         else if (callInOppositeDirection()) {
             return
         }
-        else if (callList.size > 0) {
-            destination = callList[0].floor
+        else if (waitingFloors.size() > 0) {
+            destination = waitingFloors[0]
             if(destination == currentFloor)
                 moving = false
             else  {
                 direction = destination > currentFloor ? "UP" : "DOWN"
                 if (!moving) startMoving()
             }
-            respondingCall = callList[0]
             return
         }
         moving = false
-    }
-
-    /**
-     * Adds a new call to the call list
-     *
-     * @param call The call to be added
-     */
-    public static void addCall(Command call) {
-        callList[callList.size()] = call
     }
 
     /**
@@ -255,11 +229,10 @@ class Elevator {
      * @return true if a call exists
      */
     private boolean callUpFromFloor() {
-        if (callList.size() > 0) {
-            for (i in 0..callList.size()-1) {
-                if (callList[i].floor > currentFloor) {
-                    destination = callList[i].floor
-                    respondingCall = callList[i]
+        if (waitingFloors.size() > 0) {
+            for (i in 0..waitingFloors.size()-1) {
+                if (waitingFloors[i] > currentFloor) {
+                    destination = waitingFloors[i]
                     direction = "UP"
                     if (!moving) startMoving()
                     return true
@@ -276,11 +249,10 @@ class Elevator {
      * @return true if a call exists
      */
      private boolean callDownFromFloor() {
-         if (callList.size() > 0) {
-            for (i in 0..callList.size()-1) {
-                if (callList[i].floor < currentFloor) {
-                    destination = callList[i].floor
-                    respondingCall = callList[i]
+         if (waitingFloors.size() > 0) {
+            for (i in 0..waitingFloors.size()-1) {
+                if (waitingFloors[i] < currentFloor) {
+                    destination = waitingFloors[i]
                     direction = "DOWN"
                     if (!moving) startMoving()
                     return true

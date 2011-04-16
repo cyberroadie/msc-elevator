@@ -12,7 +12,7 @@ class Controller {
     int numberOfElevators
     int numberOfFloors
     List elevatorList = []
-    private List commandList = []
+    private List callList = []
     private CommandParser commandParser
 
     /**
@@ -76,9 +76,11 @@ class Controller {
             def command = commandParser.getNextCommand(time)
             if (command instanceof Terminate) {
                 while(true) {
-                    if(Elevator.callList.size() == 0)
+                    if(callList.size() == 0)
                         System.exit(1)
                     elevatorList.each { def elevator -> elevator.respondToClock() }
+                    assignCallsToStoppedElevators()
+                    assignCallsToJustArrivedElevators()
                 }
             }
             else if (command instanceof Display)
@@ -86,7 +88,8 @@ class Controller {
             else if (command instanceof Status)
                 status()
             else if (command instanceof Call) {
-                Elevator.addCall command
+                callList[callList.size()] = command
+                updateWaitingFloors()
                 displayCall(command, time)
             } else if (command instanceof Fail) {
                 elevatorList.get(((Fail) command).elevatorNumber).fail()
@@ -94,11 +97,64 @@ class Controller {
                 elevatorList.get(((Fix) command).elevatorNumber).fix()
             }
             elevatorList.each { def elevator -> elevator.respondToClock() }
+            assignCallsToStoppedElevators()
+            assignCallsToJustArrivedElevators()
         }
     }
 
     void displayCall(Call call, String time) {
         println "call\t${call.passenger.name}\t${call.floor}\t$time\t${call.dest}"
+    }
+
+    /**
+     * Check the elevator list to see if any elevators are stopped on floors
+     * with calls waiting
+     * If there are the relevant call is sent to the elevator
+     */
+    void assignCallsToStoppedElevators() {
+        callList.each() { call ->
+            elevatorList.each() { elevator ->
+                if (!elevator.moving && elevator.operational && elevator.currentFloor == call.floor) sendCallToElevator(elevator, call)
+            }
+        }
+    }
+
+    /**
+     * Checks the elevator list to see if any elevators have just arrived
+     * on floors with calls waiting
+     * If there are the relevant call is sent to the elevator
+     */
+    void assignCallsToJustArrivedElevators() {
+        callList.each() { call ->
+            elevatorList.each() { elevator ->
+                if (elevator.currentFloor == call.floor && elevator.operational && !elevator.betweenFloors) sendCallToElevator(elevator, call)
+            }
+        }
+    }
+
+    /**
+     * Send a call to a specific elevator by calling the elevator's send call command
+     * Removes the calls from the controller's call list
+     * Calls the updateWaitingFloors method to set the floors in the Elevator static list
+     *
+     * @param elevatorNumber
+     * @param call
+     */
+    void sendCallToElevator(Elevator elevator, Command call) {
+        elevator.sendCall(call)
+        callList = callList.minus(call)
+        updateWaitingFloors()
+    }
+
+    /**
+     * Sets the current floors with waiting calls in the Elevator static list
+     */
+    void updateWaitingFloors() {
+        List waitingFloors = []
+        callList.each() {
+            waitingFloors.add(it.floor)
+        }
+        Elevator.waitingFloors = waitingFloors
     }
 
     /**

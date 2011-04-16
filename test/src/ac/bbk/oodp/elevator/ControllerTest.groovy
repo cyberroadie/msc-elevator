@@ -34,4 +34,41 @@ class ControllerTest extends GroovyTestCase {
         assertEquals(12, controller.elevatorList[2].currentFloor)
     }
 
+    void testSendCallToElevator() {
+        Controller controller = new Controller(reader)
+
+        controller.sendCallToElevator(controller.elevatorList[0],CommandFactory.getCommand("call\tTess\t5\t12:30:02\t3"))
+
+        assertEquals(1,controller.elevatorList[0].currentCalls.size())
+    }
+
+    void testAssignCallsToStoppedElevators() {
+        Controller controller = new Controller(reader)
+
+        controller.elevatorList[0].moving = true
+        controller.elevatorList[0].currentFloor = 5
+        controller.elevatorList[1].moving = false
+        controller.elevatorList[1].currentFloor = 5
+        controller.callList.add(CommandFactory.getCommand("call\tTess\t5\t12:30:02\t3"))
+        controller.assignCallsToStoppedElevators()
+
+        assertEquals(1,controller.elevatorList[1].currentCalls.size())
+        assertEquals(0,controller.elevatorList[0].currentCalls.size())
+    }
+
+    void testAssignCallsToJustArrivedElevators() {
+        Controller controller = new Controller(reader)
+
+        controller.elevatorList[0].moving = true
+        controller.elevatorList[0].betweenFloors = true
+        controller.elevatorList[0].currentFloor = 5
+        controller.elevatorList[1].moving = true
+        controller.elevatorList[1].betweenFloors = false
+        controller.elevatorList[1].currentFloor = 5
+        controller.callList.add(CommandFactory.getCommand("call\tTess\t5\t12:30:02\t3"))
+        controller.assignCallsToJustArrivedElevators()
+
+        assertEquals(1,controller.elevatorList[1].currentCalls.size())
+        assertEquals(0,controller.elevatorList[0].currentCalls.size())
+    }
 }
