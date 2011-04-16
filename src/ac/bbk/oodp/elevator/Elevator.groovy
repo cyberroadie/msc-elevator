@@ -304,7 +304,7 @@ class Elevator {
     }
 
     String display() {
-        "Elevator\t$elevatorNumber\twait time: ${waitTime}\tfloor\t$currentFloor\tdestination\t$destination\tdirection\t$direction\t\tstatus\t${getStatus()}\tpassengers:\t[${getPassengerNames()}]"
+        "Elevator\t$elevatorNumber\tfloor\t$currentFloor\tdestination\t$destination\tdirection\t$direction\t\tstatus\t${getStatus()}\tpassengers:\t[${getPassengerNames()}]"
     }
 
     String stats() {
