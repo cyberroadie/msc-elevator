@@ -29,8 +29,7 @@ class Call extends Command {
         }
     }
 
-    @Override
-    String toString() {
+    String showCall() {
         println "call\t${passenger.name}\t${floor}\t$time\t${dest}"
     }
 

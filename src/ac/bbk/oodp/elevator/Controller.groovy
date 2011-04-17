@@ -72,7 +72,7 @@ class Controller {
      * retrieved from command parser and send to the elevators and elevator will be asked
      * to respond to the next tick of the clock
      */
-    void start() {
+    void run() {
         while (true) {
             def command
             try {
@@ -85,7 +85,7 @@ class Controller {
             if (command instanceof Terminate) {
                 while(true) {
                     if(callList.size() == 0)
-                        System.exit(1)
+                        System.exit(0)
                     elevatorList.each { def elevator -> elevator.respondToClock() }
                     assignCallsToStoppedElevators()
                     assignCallsToJustArrivedElevators()
@@ -99,7 +99,7 @@ class Controller {
             else if (command instanceof Call) {
                 callList[callList.size()] = command
                 updateWaitingFloors()
-                command.toString()
+                command.showCall()
             } else if (command instanceof Fail) {
                 elevatorList.get(((Fail) command).elevatorNumber).fail()
             } else if(command instanceof Fix) {
@@ -118,7 +118,7 @@ class Controller {
                 throw new CommandException("Floor passanger is on is greater than max number of floors")
             if(command.dest > numberOfFloors)
                 throw new CommandException("Destination floor is on is greater than max number of floors")
-        } else if (command instanceof Fail) {
+        } else if (command instanceof Fail || command instanceof Fix) {
             if(command.elevatorNumber > numberOfElevators)
                 throw new CommandException("Elevator to fail doesn't exist")
         }

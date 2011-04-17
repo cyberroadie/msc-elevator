@@ -9,6 +9,4 @@ package ac.bbk.oodp.elevator
  * Date: 27/02/11
  */
 @Grab(group='joda-time', module='joda-time', version='1.6.2')
-@Grab(group='org.codehaus.gpars', module='gpars', version='0.12-beta-1-SNAPSHOT')
-@Grab(group = 'org.codehaus.gpars', module = 'gpars', version = '0.12-beta-1-SNAPSHOT')
-def controller = new Controller(new BufferedReader(new FileReader(this.args[0]))).start()
+def controller = new Controller(new BufferedReader(new FileReader(this.args[0]))).run()
