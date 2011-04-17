@@ -36,6 +36,11 @@ class Controller {
     void initElevators(reader) {
         for (i in 1..numberOfElevators) {
             def lineSplit = reader.readLine().split("\t")
+            if(!lineSplit[0].startsWith("init")) {
+                writeToErrorLog(new CommandException("Not enough init commands"))
+                System.exit(1)
+            }
+
             this.elevatorList.add((new Elevator(lineSplit[1].toInteger(), lineSplit[2].toInteger())))
         }
     }
@@ -114,12 +119,12 @@ class Controller {
 
     void validateCommand(Command command) throws CommandException {
         if (command instanceof Call) {
-            if(command.floor > numberOfFloors)
+            if(command.floor > (numberOfFloors - 1))
                 throw new CommandException("Floor passanger is on is greater than max number of floors")
             if(command.dest > numberOfFloors)
                 throw new CommandException("Destination floor is on is greater than max number of floors")
         } else if (command instanceof Fail || command instanceof Fix) {
-            if(command.elevatorNumber > numberOfElevators)
+            if(command.elevatorNumber > (numberOfElevators - 1))
                 throw new CommandException("Elevator to fail doesn't exist")
         }
     }
