@@ -116,7 +116,7 @@ class Controller {
                 throw new CommandException("Floor passanger is on is greater than max number of floors")
             if(command.dest > numberOfFloors)
                 throw new CommandException("Destination floor is on is greater than max number of floors")
-        } else if (command instanceof Fail) {
+        } else if (command instanceof Fail || command instanceof Fix) {
             if(command.elevatorNumber > numberOfElevators)
                 throw new CommandException("Elevator to fail doesn't exist")
         }
