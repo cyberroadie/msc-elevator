@@ -72,7 +72,7 @@ class Controller {
      * retrieved from command parser and send to the elevators and elevator will be asked
      * to respond to the next tick of the clock
      */
-    void start() {
+    void run() {
         while (true) {
             def command
             try {
@@ -98,7 +98,7 @@ class Controller {
             else if (command instanceof Call) {
                 callList[callList.size()] = command
                 updateWaitingFloors()
-                command.toString()
+                command.showCall()
             } else if (command instanceof Fail) {
                 elevatorList.get(((Fail) command).elevatorNumber).fail()
             } else if(command instanceof Fix) {
