@@ -85,7 +85,7 @@ class Controller {
             if (command instanceof Terminate) {
                 while(true) {
                     if(callList.size() == 0)
-                        System.exit(1)
+                        System.exit(0)
                     elevatorList.each { def elevator -> elevator.respondToClock() }
                     assignCallsToStoppedElevators()
                     assignCallsToJustArrivedElevators()

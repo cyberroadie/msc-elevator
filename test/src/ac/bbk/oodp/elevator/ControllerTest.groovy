@@ -115,7 +115,4 @@ class ControllerTest extends GroovyTestCase {
         }
     }
 
-    void testTerminate() {
-
-    }
 }
