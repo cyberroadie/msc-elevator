@@ -52,16 +52,33 @@ class Elevator {
         }
     }
 
+    /**
+     * Returns whether an elevator is stopped at the specified floor
+     *
+     * @param floor the floor to check for
+     * @return boolean true if elevator is stopped at floor, false otherwise
+     */
     public boolean stoppedAtFloor(int floor) {
         if (!moving && operational && currentFloor == floor) return true
         return false
     }
 
+    /**
+     * Returns whether an elevator has just arrived, but not stopped, at the specified floor
+     *
+     * @param floor the floor to check for
+     * @return boolean true if elevator is stopped at floor, false otherwise
+     */
     public boolean justArrivedAtFloor(int floor) {
         if (currentFloor == floor && operational && !betweenFloors) return true
         return false
     }
 
+    /**
+     * Receives a call and places it in the list of current calls
+     *
+     * @param call the call to add to the current list
+     */
     public void sendCall(Command call) {
         currentCalls.add(call)
         setWaiting()
@@ -112,6 +129,10 @@ class Elevator {
         betweenFloors = true
     }
 
+    /**
+     * start the elevator moving
+     * Sets moving to true and sets betweenFloors to true
+     */
     private void startMoving() {
         moving = true
         betweenFloors = true
@@ -168,7 +189,12 @@ class Elevator {
     /**
      * Updates the destination
      *
-     * to complete
+     * Checks if the destination is valid, if it is it returns
+     * If not it will set direction to
+     * 1 a waiting call in the same direction
+     * 2 the destination of a current passenger
+     * 3 a waiting call in the opposite direction
+     * if none available stops the elevator
      */
     private void updateDestination() {
         if (destinationValid()) return
@@ -189,7 +215,13 @@ class Elevator {
         moving = false
     }
 
-    private boolean destinationFromCallList () {
+    /**
+     * sets the direction to the destination of the first passenger and starts the
+     * elevator moving in the direction of the destination
+     *
+     * if destination is current floor stops elevator
+     */
+    private destinationFromCallList () {
         destination = currentCalls[0].dest
          if(destination == currentFloor)
              moving = false
@@ -199,7 +231,11 @@ class Elevator {
          }
     }
 
-    private boolean destinationWhenNoDirection() {
+    /**
+     * sets the destination to a call in the waiting list and starts the elevator
+     * moving in the direction of the call
+     */
+    private destinationWhenNoDirection() {
         destination = waitingFloors[0]
         if(destination == currentFloor)
             moving = false
@@ -279,17 +315,25 @@ class Elevator {
         return false
     }
 
-    void fail() {
+    /**
+     * set the elevator as non operational
+     */
+    public void fail() {
         operational = false
     }
 
-    void fix() {
+    /**
+     * sets the elevator to operational
+     */
+    public void fix() {
         operational = true
     }
 
     /**
+     * returns the current status of the elevator
+     * a combination of stopped/working and moving/stoppped
      *
-     * @return
+     * @return String the current status
      */
     public def getStatus() {
         return ("${operational ? "WORKING" : "BROKEN"}, ${moving ? "MOVING" : "STOPPED"}")
@@ -300,17 +344,29 @@ class Elevator {
      * current direction of travel, current status (broken, stopped, moving, etc.)
      * and a list of the names of all current passengers
 
-     * @return String the data being
+     * @return String the current state of the elevator
      */
     public String display() {
         "Elevator\t$elevatorNumber\tfloor\t$currentFloor\tdestination\t$destination\tdirection\t$direction\t\tstatus\t${getStatus()}\tpassengers:\t[${getPassengerNames()}]"
     }
 
+    /**
+     * returns a string containing the elevator number, number of passengers delivered,
+     * current direction of travel, current status (broken, stopped, moving, etc.)
+     * and a list of the names of all current passengers
+
+     * @return String the current state of the elevator
+     */
     public String stats() {
         """Elevator\t$elevatorNumber\tdelivered\t$passengersDelivered\tpassengers\t[${getPassengerNames()}]\tdistance\t$distanceTravelled"""
     }
 
-    def getPassengerNames() {
+    /**
+     * returns the list of current passengers' names as a comma separated string
+     *
+     * @return String the list of names to be returned
+     */
+    public String getPassengerNames() {
         def passengerNames = []
         currentCalls.collect( passengerNames ) {
             it.passenger.name
