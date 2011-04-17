@@ -72,8 +72,7 @@ class Controller {
      */
     void start() {
         while (true) {
-            def time = clock.next()
-            def command = commandParser.getNextCommand(time)
+            def command = commandParser.getNextCommand(clock)
             if (command instanceof Terminate) {
                 while(true) {
                     if(callList.size() == 0)

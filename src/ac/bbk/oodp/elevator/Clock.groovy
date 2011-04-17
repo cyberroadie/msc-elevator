@@ -19,8 +19,12 @@ class Clock {
      * Adds one second (tick) to time
      * @return time as string in format HH:mm:ss
      */
-    def next() {
+    def increaseByOneSecond() {
         startTime = startTime.plusSeconds(1)
+        return startTime.toString("HH:mm:ss")
+    }
+
+    def getCurrentTime() {
         return startTime.toString("HH:mm:ss")
     }
 
