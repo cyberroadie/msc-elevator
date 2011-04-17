@@ -90,7 +90,7 @@ class Controller {
             else if (command instanceof Call) {
                 callList[callList.size()] = command
                 updateWaitingFloors()
-                displayCall(command, time)
+                command.toString()
             } else if (command instanceof Fail) {
                 elevatorList.get(((Fail) command).elevatorNumber).fail()
             } else if(command instanceof Fix) {
@@ -100,10 +100,6 @@ class Controller {
             assignCallsToStoppedElevators()
             assignCallsToJustArrivedElevators()
         }
-    }
-
-    void displayCall(Call call, String time) {
-        println "call\t${call.passenger.name}\t${call.floor}\t$time\t${call.dest}"
     }
 
     /**

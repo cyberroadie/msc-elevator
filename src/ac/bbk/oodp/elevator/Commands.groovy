@@ -28,6 +28,12 @@ class Call extends Command {
             throw new CommandException("Incorrect command: ", ex)
         }
     }
+
+    @Override
+    String toString() {
+        println "call\t${passenger.name}\t${floor}\t$time\t${dest}"
+    }
+
 }
 
 class Fail extends Command {
