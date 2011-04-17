@@ -119,7 +119,7 @@ class Controller {
 
     void validateCommand(Command command) throws CommandException {
         if (command instanceof Call) {
-            if(command.floor > (numberOfFloors - 1))
+            if(command.floor > (numberOfFloors))
                 throw new CommandException("Floor passanger is on is greater than max number of floors")
             if(command.dest > numberOfFloors)
                 throw new CommandException("Destination floor is on is greater than max number of floors")
