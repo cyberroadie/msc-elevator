@@ -32,4 +32,11 @@ class CommandException extends Exception {
     CommandException(String s, Throwable throwable) {
         super(s, throwable)
     }
+
+    @Override
+    String toString() {
+        return message
+    }
+
+
 }

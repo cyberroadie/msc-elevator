@@ -25,9 +25,10 @@ class CommandParser {
      * will push clock forward, if no command son current time are left
      * @param time current time
      * @return Command, Terminate if no more commands available or
+     * @throws CommandException if command has invalid format
      * null if no commands are available with current time
      */
-    Command getNextCommand(Clock clock) {
+    Command getNextCommand(Clock clock) throws CommandException {
         if (currentCommand.getTime() == clock.getCurrentTime()) {
             Command tmpCommand = currentCommand
             currentCommand = CommandFactory.getCommand(reader.readLine())

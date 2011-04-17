@@ -8,6 +8,7 @@ class Controller {
 
     def log = GroovyLog.newInstance(Controller.class)
 
+    File errorLog = new File("error.log")
     Clock clock = new Clock()
     int numberOfElevators
     int numberOfFloors
@@ -23,6 +24,7 @@ class Controller {
         parseHeader(reader)
         initElevators(reader)
         commandParser = new CommandParser(reader)
+        errorLog.write("")
         log.info("Finished initializing controller")
     }
 
@@ -72,7 +74,14 @@ class Controller {
      */
     void start() {
         while (true) {
-            def command = commandParser.getNextCommand(clock)
+            def command
+            try {
+                command = commandParser.getNextCommand(clock)
+                validateCommand(command)
+            } catch (CommandException ex) {
+                writeToErrorLog(ex)
+                continue
+            }
             if (command instanceof Terminate) {
                 while(true) {
                     if(callList.size() == 0)
@@ -99,6 +108,22 @@ class Controller {
             assignCallsToStoppedElevators()
             assignCallsToJustArrivedElevators()
         }
+    }
+
+    void validateCommand(Command command) throws CommandException {
+        if (command instanceof Call) {
+            if(command.floor > numberOfFloors)
+                throw new CommandException("Floor passanger is on is greater than max number of floors")
+            if(command.dest > numberOfFloors)
+                throw new CommandException("Destination floor is on is greater than max number of floors")
+        } else if (command instanceof Fail) {
+            if(command.elevatorNumber > numberOfElevators)
+                throw new CommandException("Elevator to fail doesn't exist")
+        }
+    }
+
+    void writeToErrorLog(CommandException ex) {
+        errorLog << ex.toString() << "\n"
     }
 
     /**
