@@ -21,10 +21,10 @@ class Controller {
      * @param reader input reader for commands
      */
     Controller(BufferedReader reader) {
+        errorLog.write("")
         parseHeader(reader)
         initElevators(reader)
         commandParser = new CommandParser(reader)
-        errorLog.write("")
         log.info("Finished initializing controller")
     }
 
@@ -37,7 +37,7 @@ class Controller {
         for (i in 1..numberOfElevators) {
             def lineSplit = reader.readLine().split("\t")
             if(!lineSplit[0].startsWith("init")) {
-                writeToErrorLog(new CommandException("Not enough init commands"))
+                errorLog.write("Not enough init commands\n")
                 System.exit(1)
             }
 
@@ -104,7 +104,7 @@ class Controller {
             else if (command instanceof Call) {
                 callList[callList.size()] = command
                 updateWaitingFloors()
-                command.showCall()
+                println command.showCall()
             } else if (command instanceof Fail) {
                 elevatorList.get(((Fail) command).elevatorNumber).fail()
             } else if(command instanceof Fix) {
@@ -120,12 +120,15 @@ class Controller {
     void validateCommand(Command command) throws CommandException {
         if (command instanceof Call) {
             if(command.floor > (numberOfFloors))
-                throw new CommandException("Floor passanger is on is greater than max number of floors")
+                throw new CommandException("Floor passanger is on is greater than max number of floors: ${command.showCall()}")
             if(command.dest > numberOfFloors)
-                throw new CommandException("Destination floor is on is greater than max number of floors")
-        } else if (command instanceof Fail || command instanceof Fix) {
+                throw new CommandException("Destination floor is on is greater than max number of floors: ${command.showCall()}")
+        } else if (command instanceof Fail) {
             if(command.elevatorNumber > (numberOfElevators - 1))
-                throw new CommandException("Elevator to fail doesn't exist")
+                throw new CommandException("Elevator to fail doesn't exist: ${command.elevatorNumber}")
+        } else if (command instanceof Fix) {
+            if(command.elevatorNumber > (numberOfElevators - 1))
+                throw new CommandException("Elevator to fix doesn't exist: ${command.elevatorNumber}")
         }
     }
 
