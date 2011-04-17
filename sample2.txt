@@ -1,0 +1,12 @@
+StartTime:	09:00:01
+NumberOfFloors:	1
+NumberOfElevators:	7
+init	0	1
+init	1	1
+init	2	1
+init	3	1
+init	4	1
+display	09:30:00
+fail	5	10:00:00
+stats	10:01:00
+fail	0	10:02:00

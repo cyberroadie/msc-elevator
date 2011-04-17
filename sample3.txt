@@ -1,0 +1,18 @@
+StartTime:	23:55:00
+NumberOfFloors:	6
+NumberOfElevators:	1
+init	0	6
+fail	0	23:59:59
+display	00:00:00
+stats	00:05:00
+fail	1	00:10:00
+display	00:11:00
+call	John	5	00:12:00	1
+call 	Mary	12	00:15:00	16
+call	Max	3	00:20:00	2
+display	00:21:00
+fix	1	00:21:10
+stats	00:21:30
+fix	0	00:22:00
+display	00:23:00
+stats	00:24:00
