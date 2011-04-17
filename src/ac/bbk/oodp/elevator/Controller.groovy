@@ -21,10 +21,10 @@ class Controller {
      * @param reader input reader for commands
      */
     Controller(BufferedReader reader) {
+        errorLog.write("")
         parseHeader(reader)
         initElevators(reader)
         commandParser = new CommandParser(reader)
-        errorLog.write("")
         log.info("Finished initializing controller")
     }
 
@@ -37,7 +37,7 @@ class Controller {
         for (i in 1..numberOfElevators) {
             def lineSplit = reader.readLine().split("\t")
             if(!lineSplit[0].startsWith("init")) {
-                writeToErrorLog(new CommandException("Not enough init commands"))
+                errorLog.write("Not enough init commands\n")
                 System.exit(1)
             }
 
