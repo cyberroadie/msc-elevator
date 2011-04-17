@@ -35,18 +35,11 @@ class ControllerSystemExitTest extends GroovyTestCase {
         }
     }
 
-     BufferedReader reader
+    BufferedReader reader
 
     void setUp() {
         System.setSecurityManager(new NoExitSecurityManager());
-        this.reader = new BufferedReader(
-                new StringReader("StartTime:\t14:00:00\n" +
-                        "NumberOfFloors:\t12\n" +
-                        "NumberOfElevators:\t3\n" +
-                        "init\t0\t1\n" +
-                        "init\t0\t6\n" +
-                        "init\t0\t12\n"
-                ))
+
     }
 
     @Override
@@ -56,6 +49,15 @@ class ControllerSystemExitTest extends GroovyTestCase {
     }
 
     void testTerminate() {
+    this.reader = new BufferedReader(
+                new StringReader("StartTime:\t14:00:00\n" +
+                        "NumberOfFloors:\t12\n" +
+                        "NumberOfElevators:\t3\n" +
+                        "init\t0\t1\n" +
+                        "init\t1\t6\n" +
+                        "init\t2\t12\n" +
+                        "display\t14:00:01"
+                ))
         def controller = new Controller(reader)
 
         try {
@@ -67,4 +69,25 @@ class ControllerSystemExitTest extends GroovyTestCase {
 
     }
 
+    void testTerminateWrongAmountOfInits() {
+    this.reader = new BufferedReader(
+                new StringReader("StartTime:\t14:00:00\n" +
+                        "NumberOfFloors:\t12\n" +
+                        "NumberOfElevators:\t4\n" +
+                        "init\t0\t1\n" +
+                        "init\t1\t6\n" +
+                        "init\t2\t12\n" +
+                        "display\t14:00:01"
+                ))
+
+
+        try {
+            def controller = new Controller(reader)
+            fail()
+        } catch (ExitException e) {
+            assertEquals("Exit status", 1, e.status);
+        }
+
+
+    }
 }

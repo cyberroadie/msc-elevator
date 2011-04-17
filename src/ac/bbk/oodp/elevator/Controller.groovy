@@ -36,6 +36,11 @@ class Controller {
     void initElevators(reader) {
         for (i in 1..numberOfElevators) {
             def lineSplit = reader.readLine().split("\t")
+            if(!lineSplit[0].startsWith("init")) {
+                writeToErrorLog(new CommandException("Not enough init commands"))
+                System.exit(1)
+            }
+
             this.elevatorList.add((new Elevator(lineSplit[1].toInteger(), lineSplit[2].toInteger())))
         }
     }
