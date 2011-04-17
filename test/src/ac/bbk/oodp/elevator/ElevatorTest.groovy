@@ -181,6 +181,6 @@ class ElevatorTest extends GroovyTestCase {
     void testDisplay() {
         this.testElevator1 = new Elevator(1,5)
         this.testElevator1.currentCalls[0] = CommandFactory.getCommand("call\tTess\t2\t12:30:02\t3")
-        assertEquals("Elevator Number: 1\nCurrent location: 5\nCurrent passengers: Tess",this.testElevator1.display())
+        assertEquals("Elevator\t1\tfloor\t5\tdestination\t0\tdirection\tNONE\t\tstatus\tWORKING, STOPPED\tpassengers:\t[Tess]",this.testElevator1.display())
     }
 }

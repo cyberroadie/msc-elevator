@@ -22,10 +22,7 @@ class ControllerTest extends GroovyTestCase {
     void testControllerCreation() {
 
         Clock clock = new Clock()
-        clock.start()
-        Controller controller = new Controller(reader, clock)
-        sleep(100)
-        assertEquals("14:00:00", clock.getNextStringTime())
+        Controller controller = new Controller(reader)
         assertEquals(12, controller.numberOfFloors)
         assertEquals(3, controller.elevatorList.size())
 

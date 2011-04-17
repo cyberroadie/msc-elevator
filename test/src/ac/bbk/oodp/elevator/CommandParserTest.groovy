@@ -6,27 +6,33 @@ package ac.bbk.oodp.elevator
  */
 class CommandParserTest extends GroovyTestCase {
 
-    void testReadNextLine() {
-        def testParser = new CommandParser("/Users/brownr22/Documents/commands.txt")
-        Command testCommand = testParser.getNextCommand("12:30:02")
-        println "${testCommand.getTime()} ${testCommand.class.simpleName}"
-        testCommand = testParser.getNextCommand("12:30:03")
-        println testCommand
-        testCommand = testParser.getNextCommand("12:30:04")
-        println "${testCommand.getTime()} ${testCommand.class.simpleName}"
-        testCommand = testParser.getNextCommand("12:30:05")
-        println testCommand
-        testCommand = testParser.getNextCommand("12:30:06")
-        println "${testCommand.getTime()} ${testCommand.class.simpleName}"
-        testCommand = testParser.getNextCommand("12:30:07")
-        println testCommand
-        testCommand = testParser.getNextCommand("12:30:08")
-        println "${testCommand.getTime()} ${testCommand.class.simpleName}"
-        testCommand = testParser.getNextCommand("12:30:09")
-        println testCommand
-        testCommand = testParser.getNextCommand("12:30:10")
-        println "${testCommand.getTime()} ${testCommand.class.simpleName}"
+    BufferedReader reader
 
+    void setUp() {
+        this.reader = new BufferedReader(
+                new StringReader("display\t14:00:01\n" +
+                                 "fail\t2\t14:00:02\n" +
+                                 "call\tFred\t12\t14:00:03\t1\n" +
+                                 "stats\t14:00:04\n"
+                ))
+    }
+
+    void testReadNextLine() {
+        def clock = new Clock()
+        clock.initializeClock("init\t14:00:00")
+        def testParser = new CommandParser(reader)
+        assertNull(testParser.getNextCommand(clock))
+        Command testCommand = testParser.getNextCommand(clock)
+        assertTrue(testCommand instanceof Display)
+        assertNull(testParser.getNextCommand(clock))
+        testCommand = testParser.getNextCommand(clock)
+        assertTrue(testCommand instanceof Fail)
+        assertNull(testParser.getNextCommand(clock))
+        testCommand = testParser.getNextCommand(clock)
+        assertTrue(testCommand instanceof Call)
+        assertNull(testParser.getNextCommand(clock))
+        testCommand = testParser.getNextCommand(clock)
+        assertTrue(testCommand instanceof Status)
     }
 
 }
