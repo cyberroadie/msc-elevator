@@ -120,7 +120,7 @@ class Controller {
                 throw new CommandException("Destination floor is on is greater than max number of floors")
         } else if (command instanceof Fail || command instanceof Fix) {
             if(command.elevatorNumber > numberOfElevators)
-                throw new CommandException("Elevator to fail doesn't exist")
+                throw new CommandException("Elevator to ${command.class.name} doesn't exist")
         }
     }
 
@@ -134,9 +134,11 @@ class Controller {
      * If there are the relevant call is sent to the elevator
      */
     void assignCallsToStoppedElevators() {
-        callList.each() { call ->
-            elevatorList.each() { elevator ->
-                if (elevator.stoppedAtFloor(call.floor)) sendCallToElevator(elevator, call)
+        elevatorList.each() { elevator ->
+            callList.each() { call ->
+                if (elevator.stoppedAtFloor(call.floor)) {
+                    sendCallToElevator(elevator, call)
+                }
             }
         }
     }
@@ -147,9 +149,11 @@ class Controller {
      * If there are the relevant call is sent to the elevator
      */
     void assignCallsToJustArrivedElevators() {
-        callList.each() { call ->
-            elevatorList.each() { elevator ->
-                if (elevator.justArrivedAtFloor(call.floor)) sendCallToElevator(elevator, call)
+        elevatorList.each() { elevator ->
+            callList.each() { call ->
+                if (elevator.justArrivedAtFloor(call.floor)) {
+                    sendCallToElevator(elevator, call)
+                }
             }
         }
     }

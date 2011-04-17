@@ -38,7 +38,6 @@ class Elevator {
     Elevator(int elevator, int startingFloor) {
         elevatorNumber = elevator
         currentFloor = startingFloor
-        println "init\t$elevatorNumber\t$currentFloor"
     }
 
     /**
