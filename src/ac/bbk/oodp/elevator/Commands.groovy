@@ -30,7 +30,7 @@ class Call extends Command {
     }
 
     String showCall() {
-        println "call\t${passenger.name}\t${floor}\t$time\t${dest}"
+        return "call\t${passenger.name}\t${floor}\t$time\t${dest}"
     }
 
 }
