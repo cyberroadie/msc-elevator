@@ -51,7 +51,16 @@ class Elevator {
         if (travelTime == 0) {
             letPassengerOff()
         }
-        if (!destinationValid()) {updateDestination()}
+    }
+
+    public boolean stoppedAtFloor(int floor) {
+        if (!moving && operational && currentFloor == floor) return true
+        return false
+    }
+
+    public boolean justArrivedAtFloor(int floor) {
+        if (currentFloor == floor && operational && !betweenFloors) return true
+        return false
     }
 
     public void sendCall(Command call) {
@@ -163,33 +172,42 @@ class Elevator {
      * to complete
      */
     private void updateDestination() {
+        if (destinationValid()) return
         if (callInSameDirection()) {
             return
         }
         else if (currentCalls.size() > 0) {
-            destination = currentCalls[0].dest
-            if(destination == currentFloor)
-                moving = false
-            else {
-                direction = destination > currentFloor ? "UP" : "DOWN"
-                if (!moving) startMoving()
-            }
+            destinationFromCallList()
             return
         }
         else if (callInOppositeDirection()) {
             return
         }
         else if (waitingFloors.size() > 0) {
-            destination = waitingFloors[0]
-            if(destination == currentFloor)
-                moving = false
-            else  {
-                direction = destination > currentFloor ? "UP" : "DOWN"
-                if (!moving) startMoving()
-            }
+            destinationWhenNoDirection()
             return
         }
         moving = false
+    }
+
+    private boolean destinationFromCallList () {
+        destination = currentCalls[0].dest
+         if(destination == currentFloor)
+             moving = false
+         else {
+             direction = destination > currentFloor ? "UP" : "DOWN"
+             if (!moving) startMoving()
+         }
+    }
+
+    private boolean destinationWhenNoDirection() {
+        destination = waitingFloors[0]
+        if(destination == currentFloor)
+            moving = false
+        else  {
+            direction = destination > currentFloor ? "UP" : "DOWN"
+            if (!moving) startMoving()
+        }
     }
 
     /**
@@ -270,20 +288,30 @@ class Elevator {
         operational = true
     }
 
-
-    def getStatus() {
+    /**
+     *
+     * @return
+     */
+    public def getStatus() {
         return ("${operational ? "WORKING" : "BROKEN"}, ${moving ? "MOVING" : "STOPPED"}")
     }
 
-    String display() {
+    /**
+     * returns a string containing the elevator number, current location,
+     * current direction of travel, current status (broken, stopped, moving, etc.)
+     * and a list of the names of all current passengers
+
+     * @return String the data being
+     */
+    public String display() {
         "Elevator\t$elevatorNumber\tfloor\t$currentFloor\tdestination\t$destination\tdirection\t$direction\t\tstatus\t${getStatus()}\tpassengers:\t[${getPassengerNames()}]"
     }
 
-    String stats() {
+    public String stats() {
         """Elevator\t$elevatorNumber\tdelivered\t$passengersDelivered\tpassengers\t[${getPassengerNames()}]\tdistance\t$distanceTravelled"""
     }
 
-     def getPassengerNames() {
+    def getPassengerNames() {
         def passengerNames = []
         currentCalls.collect( passengerNames ) {
             it.passenger.name

@@ -89,6 +89,7 @@ class Controller {
                     elevatorList.each { def elevator -> elevator.respondToClock() }
                     assignCallsToStoppedElevators()
                     assignCallsToJustArrivedElevators()
+                    elevatorList.each { def elevator -> elevator.updateDestination() }
                 }
             }
             else if (command instanceof Display)
@@ -107,6 +108,7 @@ class Controller {
             elevatorList.each { def elevator -> elevator.respondToClock() }
             assignCallsToStoppedElevators()
             assignCallsToJustArrivedElevators()
+            elevatorList.each { def elevator -> elevator.updateDestination() }
         }
     }
 
@@ -134,7 +136,7 @@ class Controller {
     void assignCallsToStoppedElevators() {
         callList.each() { call ->
             elevatorList.each() { elevator ->
-                if (!elevator.moving && elevator.operational && elevator.currentFloor == call.floor) sendCallToElevator(elevator, call)
+                if (elevator.stoppedAtFloor(call.floor)) sendCallToElevator(elevator, call)
             }
         }
     }
@@ -147,7 +149,7 @@ class Controller {
     void assignCallsToJustArrivedElevators() {
         callList.each() { call ->
             elevatorList.each() { elevator ->
-                if (elevator.currentFloor == call.floor && elevator.operational && !elevator.betweenFloors) sendCallToElevator(elevator, call)
+                if (elevator.justArrivedAtFloor(call.floor)) sendCallToElevator(elevator, call)
             }
         }
     }

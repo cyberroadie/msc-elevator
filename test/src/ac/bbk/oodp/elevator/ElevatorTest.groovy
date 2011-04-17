@@ -107,12 +107,14 @@ class ElevatorTest extends GroovyTestCase {
         Elevator.waitingFloors = [2,7,9]
         testElevator1.moving = true
         testElevator1.direction = "UP"
+        testElevator1.destination = 4
         this.testElevator1.updateDestination()
         assertEquals(7,this.testElevator1.destination)
 
         Elevator.waitingFloors = [2,7,9]
         testElevator1.moving = true
         testElevator1.direction = "Down"
+        testElevator1.destination = 4
         this.testElevator1.updateDestination()
         assertEquals(2,this.testElevator1.destination)
 
@@ -121,6 +123,7 @@ class ElevatorTest extends GroovyTestCase {
         testElevator1.moving = true
         testElevator1.currentFloor = 1
         testElevator1.direction = "DOWN"
+        testElevator1.destination = 4
         this.testElevator1.updateDestination()
         assertEquals(3,this.testElevator1.destination)
     }
